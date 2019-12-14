@@ -1,0 +1,23 @@
+---
+version: '2.1'
+services:
+  zookeeper-4:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_SERVER_ID: 4
+      ZOOKEEPER_CLIENT_PORT: 42181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: ${ZK_O_HOSTNAME}:12888:13888;${ZK_O_HOSTNAME}:22888:23888;${ZK_O_HOSTNAME}:32888:33888;0.0.0.0:42888:43888;0.0.0.0:52888:53888
+    network_mode: host
+  zookeeper-5:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_SERVER_ID: 5
+      ZOOKEEPER_CLIENT_PORT: 52181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
+      ZOOKEEPER_SERVERS: ${ZK_O_HOSTNAME}:12888:13888;${ZK_O_HOSTNAME}:22888:23888;${ZK_O_HOSTNAME}:32888:33888;0.0.0.0:42888:43888;0.0.0.0:52888:53888
+    network_mode: host
