@@ -1,0 +1,385 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "apiProfile": "2018-03-01-hybrid",
+  "parameters": {
+    "vmSize": {
+      "type": "string",
+      "metadata": {
+          "description": "VM size"
+      }
+    },
+    "vm1Name": {
+        "type": "string",
+        "defaultValue": "kafka1",
+        "metadata": {
+            "description": "VM name"
+        }
+    },
+    "vm2Name": {
+        "type": "string",
+        "defaultValue": "kafka2",
+        "metadata": {
+            "description": "VM name"
+        }
+    },
+    "adminUsername": {
+        "type": "string",
+        "metadata": {
+            "description": "Admin username"
+        }
+    },
+    "adminPassword": {
+        "type": "securestring",
+        "metadata": {
+            "description": "Admin password"
+        }
+    },
+    "virtualNetworkName": {
+        "type": "string",
+        "defaultValue": "kafka-vnet",
+        "metadata": {
+            "description": "Virtual network name"
+        }
+    }
+  },
+  "variables": {
+    "vm1Name": "[parameters('vm1Name')]",
+    "vm2Name": "[parameters('vm2Name')]",
+    "nic1": "kafka1-nic1",
+    "nic2": "kafka2-nic1",
+    "virtualNetworkName": "[parameters('virtualNetworkName')]",
+    "subnet1Name": "kafka-1-subnet",
+    "subnet2Name": "kafka-2-subnet",
+    "publicIPAddress1Name": "kafka1-publicip",
+    "publicIPAddress2Name": "kafka2-publicip",
+    "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]",
+    "subnet2Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet2Name'))]",
+    "networkSecurityGroup1Name": "kafka1-nsg",
+    "networkSecurityGroup2Name": "kafka2-nsg",
+    "imagePublisher": "OpenLogic",
+    "imageOffer": "CentOS",
+    "imageSku": "7.5"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vm1Name')]",
+      "apiVersion": "2018-06-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+          "[variables('nic1')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vm1Name')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "dataDisks": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "properties": {
+                "primary": true
+              },
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic1'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[variables('vm2Name')]",
+      "apiVersion": "2018-06-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+          "[variables('nic1')]"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[variables('vm2Name')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSku')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage"
+          },
+          "dataDisks": []
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "properties": {
+                "primary": true
+              },
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nic2'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "Virtual Network 1",
+      "properties": {
+          "addressSpace": {
+              "addressPrefixes": [
+                  "12.0.0.0/16"
+              ]
+          },
+          "subnets": [
+              {
+                  "name": "[variables('subnet1Name')]",
+                  "properties": {
+                      "addressPrefix": "12.0.1.0/28"
+                  }
+              },
+              {
+                  "name": "[variables('subnet2Name')]",
+                  "properties": {
+                      "addressPrefix": "12.0.2.0/28"
+                  }
+              }
+          ]
+      }
+  },
+    {
+      "name": "[variables('nic1')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "NIC 1",
+      "dependsOn": [
+          "[variables('publicIPAddress1Name')]",
+          "[variables('networkSecurityGroup1Name')]",
+          "[variables('virtualNetworkName')]"
+      ],
+      "properties": {
+          "ipConfigurations": [
+              {
+                  "name": "ipconfig1",
+                  "properties": {
+                      "subnet": {
+                          "id": "[variables('subnet1Ref')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIpAddress": {
+                          "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIPAddress1Name'))]"
+                      }
+                  }
+              }
+          ],
+          "networkSecurityGroup": {
+              "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroup1Name'))]"
+          }
+      }
+    },
+    {
+      "name": "[variables('nic2')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "NIC 2",
+      "dependsOn": [
+          "[variables('publicIPAddress2Name')]",
+          "[variables('networkSecurityGroup2Name')]",
+          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+          "ipConfigurations": [
+              {
+                  "name": "ipconfig1",
+                  "properties": {
+                      "subnet": {
+                          "id": "[variables('subnet2Ref')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIpAddress": {
+                          "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIPAddress2Name'))]"
+                      }				
+                  }
+              }
+          ]
+      }
+    },
+    {
+      "name": "[variables('publicIPAddress1Name')]",
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "Public IP for Primary NIC",
+      "properties": {
+          "publicIpAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "name": "[variables('publicIPAddress2Name')]",
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "Public IP for Primary NIC",
+      "properties": {
+          "publicIpAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "name": "[variables('networkSecurityGroup1Name')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "Network Security Group (NSG) for Primary NIC",
+      "properties": {
+          "securityRules": [
+            {
+                "name": "allow-ssh",
+                "properties": {
+                    "priority": 600,
+                    "sourceAddressPrefix": "*",
+                    "protocol": "Tcp",
+                    "destinationPortRange": "22",
+                    "access": "Allow",
+                    "direction": "Inbound",
+                    "sourcePortRange": "*",
+                    "destinationAddressPrefix": "*"
+                }
+            },
+            {
+              "name": "zookeeper-firewall",
+              "properties": {
+                "description": "Zookeeper Firewall Rules",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "12181", 
+                  "12888",
+                  "22181",
+                  "22888",
+                  "32181",
+                  "32888"
+                  ],
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1001,
+                "direction": "Inbound"
+              }
+            },
+            {
+              "name": "kafka-firewall",
+              "properties": {
+                "description": "Kafka Firewall Rules",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "19092", 
+                  "19093",
+                  "29092",
+                  "29093",
+                  "39092",
+                  "39093"
+                  ],
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1000,
+                "direction": "Inbound"
+              }
+            }
+          ]
+      }
+  },
+  {
+    "name": "[variables('networkSecurityGroup2Name')]",
+    "type": "Microsoft.Network/networkSecurityGroups",
+    "apiVersion": "2018-08-01",
+    "location": "[resourceGroup().location]",
+    "comments": "Network Security Group (NSG) for Primary NIC",
+    "properties": {
+        "securityRules": [
+            {
+                "name": "allow-ssh",
+                "properties": {
+                    "priority": 600,
+                    "sourceAddressPrefix": "*",
+                    "protocol": "Tcp",
+                    "destinationPortRange": "22",
+                    "access": "Allow",
+                    "direction": "Inbound",
+                    "sourcePortRange": "*",
+                    "destinationAddressPrefix": "*"
+                }
+            },
+            {
+              "name": "zookeeper-firewall",
+              "properties": {
+                "description": "Zookeeper Firewall Rules",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "42181", 
+                  "42888",
+                  "52181",
+                  "52888"
+                  ],
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1001,
+                "direction": "Inbound"
+              }
+            },
+            {
+              "name": "kafka-firewall",
+              "properties": {
+                "description": "Kafka Firewall Rules",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "49092", 
+                  "49093",
+                  "59092",
+                  "59093"
+                  ],
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1000,
+                "direction": "Inbound"
+              }
+            }
+            
+        ]
+    }
+  }
+
+  ]
+}
