@@ -281,11 +281,8 @@
                 "sourceAddressPrefix": "*",
                 "destinationPortRanges": [
                   "12181", 
-                  "12888",
                   "22181",
-                  "22888",
-                  "32181",
-                  "32888"
+                  "32181"
                   ],
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
@@ -301,11 +298,8 @@
                 "sourcePortRange": "*",
                 "sourceAddressPrefix": "*",
                 "destinationPortRanges": [
-                  "19092", 
                   "19093",
-                  "29092",
                   "29093",
-                  "39092",
                   "39093"
                   ],
                 "destinationAddressPrefix": "*",
@@ -347,9 +341,7 @@
                 "sourceAddressPrefix": "*",
                 "destinationPortRanges": [
                   "42181", 
-                  "42888",
-                  "52181",
-                  "52888"
+                  "52181"
                   ],
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
@@ -365,9 +357,7 @@
                 "sourcePortRange": "*",
                 "sourceAddressPrefix": "*",
                 "destinationPortRanges": [
-                  "49092", 
                   "49093",
-                  "59092",
                   "59093"
                   ],
                 "destinationAddressPrefix": "*",
