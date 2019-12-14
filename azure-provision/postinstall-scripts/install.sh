@@ -2,6 +2,8 @@
 sudo yum check-update
 sudo yum install nc -y
 sudo yum install git -y
+sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+sudo yum install htop
 # Install Docker
 curl -fsSL https://get.docker.com/ | sh
 sudo systemctl start docker
