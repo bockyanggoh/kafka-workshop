@@ -22,7 +22,10 @@ sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 # Install Kafka CLI
 wget --directory-prefix=/tmp/ https://www-eu.apache.org/dist/kafka/2.3.0/kafka_2.12-2.3.0.tgz
 tar -C /tmp -xzf /tmp/kafka_2.12-2.3.0.tgz
-export PATH=$PATH:/tmp/kafka_2.12-2.3.0/bin
+echo "export PATH=$PATH:/tmp/kafka_2.12-2.3.0/bin" > /etc/profile.d/kafka-path.sh
+chmod 777 /etc/profile.d/kafka-path.sh
+chown root:root /etc/profile.d/kafka-path.sh
+
 rm -f /tmp/kafka_2.12-2.3.0.tgz
 
 # Download Kafka Workshop files
