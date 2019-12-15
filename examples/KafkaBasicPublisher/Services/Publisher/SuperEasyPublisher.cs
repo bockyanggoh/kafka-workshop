@@ -19,9 +19,16 @@ namespace KafkaBasicPublisher.Services.Publisher
             return response;
         }
 
-        public async Task PublishMultiple(PublishMultipleRequest request)
+        public async Task<bool> PublishMultiple(PublishMultipleRequest request)
         {
-            return;
+            try
+            {
+                return await this.PublishMultipleMessagesToKafka(request.Message);
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
     }
 }

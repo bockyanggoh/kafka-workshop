@@ -26,8 +26,9 @@ namespace KafkaBasicPublisher.Controllers
         [HttpPost("publish/multiple")]
         public async Task<IActionResult> FireMultipleMessages([FromBody]PublishMultipleRequest request)
         {
-            _publisher.PublishMultiple(request);
-            return Ok("Placeholder");
+            return await _publisher.PublishMultiple(request)
+                ? Ok("Successfully published message")
+                : StatusCode(500, "Failed to deliver message to Kafka servers. Ensure the servers are available");
         }
     }
 }

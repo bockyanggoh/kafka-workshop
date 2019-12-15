@@ -76,5 +76,31 @@ namespace KafkaBasicPublisher.Services.Publisher
             }
             return false;
         }
+
+        public async Task<bool> PublishMultipleMessagesToKafka(List<string> messages)
+        {
+            using (var producer = new ProducerBuilder<string, string>(_producerConfig).Build())
+            {
+                Console.WriteLine($"Producer {producer.Name} producing on topic {_publisher.Topic}.");
+
+                try
+                {
+                    foreach (string m in messages)
+                    {
+                        await producer.ProduceAsync(_publisher.Topic, new Message<string, string>
+                        {
+                            Value = m
+                        });
+                    }
+
+                    return true;
+                }
+                catch (ProduceException<string, string> e)
+                {
+                    Console.WriteLine($"failed to deliver message: {e.Message} [{e.Error.Code}]");
+                }
+            }
+            return false;
+        }
     }
 }
