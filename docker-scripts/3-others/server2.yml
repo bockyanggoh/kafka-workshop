@@ -1,0 +1,20 @@
+---
+version: '2.1'
+services:
+  schema-registry:
+    image: confluentinc/cp-schema-registry:latest
+    network_mode: host
+    environment:
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'kafka1:12181,kafka1:22181,kafka1:32181,kafka2:42181,kafka2:52181'
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: "3"
+      SCHEMA_REGISTRY_HOST_NAME: "kafka-schema-registry"
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:latest
+    network_mode: host
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka1:19092,kafka1:29092,kafka1:39092,kafka2:49092,kafka3:59092'
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://0.0.0.0:8081'
+  

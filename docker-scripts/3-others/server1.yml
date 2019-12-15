@@ -1,0 +1,10 @@
+---
+version: '2.1'
+services:
+  kafka-1:
+    image: confluentinc/cp-schema-registry:latest
+    network_mode: host
+    environment:
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS:PLAINTEXT: PLAINTEXT://
+      SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR: "3"
