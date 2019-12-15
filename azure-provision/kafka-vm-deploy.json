@@ -365,6 +365,25 @@
                 "priority": 1000,
                 "direction": "Inbound"
               }
+            },
+            {
+              "name": "other-firewall",
+              "properties": {
+                "description": "Kafka Dependency Firewall",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "49093",
+                  "59093",
+                  "8082",
+                  "8081"
+                  ],
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1000,
+                "direction": "Inbound"
+              }
             }
             
         ]

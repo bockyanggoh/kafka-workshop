@@ -16,5 +16,5 @@ services:
       KAFKA_REST_HOST_NAME: rest-proxy
       KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka1:19092,kafka1:29092,kafka1:39092,kafka2:49092,kafka3:59092'
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
-      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://0.0.0.0:8081'
+      KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://kafka2:8081'
   

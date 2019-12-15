@@ -12,6 +12,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_DELETE_RETENTION_MS: 1000
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
   kafka-2:
     image: confluentinc/cp-kafka:latest
     network_mode: host
@@ -23,6 +24,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_DELETE_TOPIC_ENABLE: "true"
       KAFKA_DELETE_RETENTION_MS: 1000
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
   kafka-3:
     image: confluentinc/cp-kafka:latest
     network_mode: host
