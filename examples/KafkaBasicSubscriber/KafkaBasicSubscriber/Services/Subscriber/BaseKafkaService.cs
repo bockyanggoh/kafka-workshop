@@ -1,40 +1,31 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Confluent.Kafka;
 using KafkaBasicPublisher.OptionModel;
+using KafkaBasicSubscriber.Wrappers;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
 namespace KafkaBasicSubscriber.Services.Subscriber
 {
-    public class BaseKafkaService
+    public class BaseKafkaService : BackgroundService
     {
         private KafkaSubscription _subscription;
-        private ConsumerConfig _consumerConfig;
+        private KafkaOption _option;
         public BaseKafkaService(KafkaOption option)
         {
+            _option = option;
             Console.WriteLine(JsonConvert.SerializeObject(option));
             try
             {
                 var subscription = option.Subscriptions.First(i => i.ServiceName == this.GetType().Name);
                 _subscription = subscription;
-                
-                _consumerConfig = new ConsumerConfig
-                {
-                    BootstrapServers = GenerateKafkaBrokerString(option),
-                    GroupId = option.GroupId,
-                    EnableAutoCommit = false,
-                    StatisticsIntervalMs = 10000,
-                    SessionTimeoutMs = 10000,
-                    AutoOffsetReset = AutoOffsetReset.Earliest,
-                    EnablePartitionEof = true
-                };
-                
-                this.Consume();
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error consuming. {e.Message}");
+                Console.WriteLine($"Error setting up Consumer. {e.Message}");
             }
         }
         
@@ -57,28 +48,6 @@ namespace KafkaBasicSubscriber.Services.Subscriber
             return bootstrapServers;
         }
 
-        protected void Consume()
-        {
-            using (var consumer = new ConsumerBuilder<Ignore, string>(_consumerConfig)
-                .SetErrorHandler((_, e) => ReadErrors(e))
-                .SetLogHandler((_, e) => ReadLogs(e))
-                .SetPartitionsAssignedHandler((c, partitions) =>
-                {
-                    Console.WriteLine($"Assigned partitions: [{string.Join(", ", partitions)}]");
-                })
-                .SetPartitionsRevokedHandler((c, partitions) =>
-                {
-                    Console.WriteLine($"Revoking assignment: [{string.Join(", ", partitions)}]");
-                })
-                .Build()
-            )
-            {
-                consumer.Subscribe(_subscription.Topic);
-
-                ReadMessage(consumer);
-            }
-        }
-
         protected void ReadErrors(Error errorMessage)
         {
             Console.WriteLine($"Error reading message, reason: {errorMessage.Reason}");
@@ -89,40 +58,35 @@ namespace KafkaBasicSubscriber.Services.Subscriber
             Console.WriteLine($"LOG MESSAGE: {m.Message}");
         }
 
-        protected void ReadMessage(IConsumer<Ignore, string> consumer)
+
+        protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                while (true)
+                try
                 {
-                    var consumeResult = consumer.Consume(CancellationToken.None);
-                    if (consumeResult.IsPartitionEOF)
-                    {
-                        Console.WriteLine(
-                            $"Reached end of topic {consumeResult.Topic}, partition {consumeResult.Partition}, offset {consumeResult.Offset}");
-                    }
-
-                    Console.WriteLine(
-                        $"Received message at {consumeResult.TopicPartitionOffset}: {consumeResult.Value}");
-
-                    if (consumeResult.Offset % 1 == 0)
-                    {
-                        try
+                    var subWrapper = new SubscribeWrapper(
+                        new ConsumerConfig
                         {
-                            consumer.Commit(consumeResult);
-                        }
-                        catch (KafkaException e)
-                        {
-                            Console.WriteLine($"Commit error: ${e.Error.Reason}");
-                        }
-                    }
+                            BootstrapServers = GenerateKafkaBrokerString(_option),
+                            GroupId = _option.GroupId,
+                            EnableAutoCommit = true,
+                            StatisticsIntervalMs = 10000,
+                            SessionTimeoutMs = 10000,
+                            AutoOffsetReset = AutoOffsetReset.Earliest,
+                            EnablePartitionEof = true
+                        },
+                        _subscription.Topic
+                    );
+                    subWrapper.ReadMessage();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error Reading: {e.Message}");
                 }
             }
-            catch (ConsumeException e)
-            {
-                Console.WriteLine($"Consume error: {e.Error.Reason}");
-            }
-        }
 
+            return null;
+        }
     }
 }

@@ -25,8 +25,8 @@ namespace KafkaBasicSubscriber
             Configuration.GetSection("Kafka").Bind(kafkaOption);
             services.AddOptions();
             services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
-            services.AddSingleton<SuperEasySubscriber>();
-
+            // services.AddSingleton<SuperEasySubscriber>();
+            services.AddSingleton<IHostedService, SuperEasySubscriber>();
             services.AddSwaggerGen(c =>{ 
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Kafka API", Version = "v1"});
             });
