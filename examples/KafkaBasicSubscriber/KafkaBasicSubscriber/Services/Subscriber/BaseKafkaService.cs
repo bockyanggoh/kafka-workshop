@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using KafkaBasicPublisher.OptionModel;
-using KafkaBasicSubscriber.Wrappers;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 
@@ -12,8 +11,8 @@ namespace KafkaBasicSubscriber.Services.Subscriber
 {
     public class BaseKafkaService : BackgroundService
     {
-        private KafkaSubscription _subscription;
-        private KafkaOption _option;
+        private readonly KafkaSubscription _subscription;
+        private readonly KafkaOption _option;
         private IConsumer<Ignore, string> _consumer;
         public BaseKafkaService(KafkaOption option)
         {
@@ -75,17 +74,6 @@ namespace KafkaBasicSubscriber.Services.Subscriber
 
             return bootstrapServers;
         }
-
-        protected void ReadErrors(Error errorMessage)
-        {
-            Console.WriteLine($"Error reading message, reason: {errorMessage.Reason}");
-        }
-
-        protected void ReadLogs(LogMessage m)
-        {
-            Console.WriteLine($"LOG MESSAGE: {m.Message}");
-        }
-
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
