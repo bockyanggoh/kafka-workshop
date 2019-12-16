@@ -225,7 +225,7 @@
                       "privateIPAllocationMethod": "Dynamic",
                       "publicIpAddress": {
                           "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIPAddress2Name'))]"
-                      }				
+                      }
                   }
               }
           ]
@@ -238,7 +238,10 @@
       "location": "[resourceGroup().location]",
       "comments": "Public IP for Primary NIC",
       "properties": {
-          "publicIpAllocationMethod": "Dynamic"
+          "publicIpAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "kafka1-workshop"
+          }
       }
     },
     {
@@ -248,7 +251,10 @@
       "location": "[resourceGroup().location]",
       "comments": "Public IP for Primary NIC",
       "properties": {
-          "publicIpAllocationMethod": "Dynamic"
+          "publicIpAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "kafka2-workshop"
+          }
       }
     },
     {

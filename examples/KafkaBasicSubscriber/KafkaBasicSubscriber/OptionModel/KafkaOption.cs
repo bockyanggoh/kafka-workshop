@@ -22,12 +22,12 @@ namespace KafkaBasicPublisher.OptionModel
         public string Topic { get; set; }
         public string Partition { get; set; }
         public string ServiceName { get; set; }
-        public string MethodName { get; set; }
     }
 
     public class KafkaPublisher
     {
         public string Topic { get; set; }
+        public string Partition { get; set; }
         public string ServiceName { get; set; }
     }
 }

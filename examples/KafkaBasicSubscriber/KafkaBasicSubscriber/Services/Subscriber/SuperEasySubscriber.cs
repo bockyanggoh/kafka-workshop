@@ -7,6 +7,7 @@ namespace KafkaBasicSubscriber.Services.Subscriber
     {
         public SuperEasySubscriber(IOptions<KafkaOption> options) : base(options.Value)
         {
+            
         }
     }
 }
