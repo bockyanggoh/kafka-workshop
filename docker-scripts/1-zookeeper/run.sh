@@ -8,4 +8,4 @@ echo "ZK_O_HOSTNAME is set to $ZK_O_HOSTNAME"
 docker-compose -f $compose_file down
 docker-compose -f $compose_file up -d
 
-
+docker-compose -f $compose_file logs -f

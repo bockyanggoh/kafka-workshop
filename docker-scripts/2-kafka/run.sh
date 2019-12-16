@@ -10,3 +10,4 @@ echo "ZK_O_HOSTNAME=$ZK_O_HOSTNAME, PUBLIC_IP=$PUBLIC_IP"
 docker-compose -f $compose_file down
 docker-compose -f $compose_file up -d
 
+docker-compose -f $compose_file logs -f
