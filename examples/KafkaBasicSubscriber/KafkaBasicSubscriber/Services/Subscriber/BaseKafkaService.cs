@@ -14,6 +14,7 @@ namespace KafkaBasicSubscriber.Services.Subscriber
     {
         private KafkaSubscription _subscription;
         private KafkaOption _option;
+        private IConsumer<Ignore, string> _consumer;
         public BaseKafkaService(KafkaOption option)
         {
             _option = option;
@@ -22,6 +23,33 @@ namespace KafkaBasicSubscriber.Services.Subscriber
             {
                 var subscription = option.Subscriptions.First(i => i.ServiceName == this.GetType().Name);
                 _subscription = subscription;
+                _consumer = new ConsumerBuilder<Ignore, string>(new ConsumerConfig
+                        {
+                            BootstrapServers = GenerateKafkaBrokerString(_option),
+                            GroupId = _option.GroupId,
+                            EnableAutoCommit = true,
+                            StatisticsIntervalMs = 10000,
+                            SessionTimeoutMs = 10000,
+                            AutoOffsetReset = AutoOffsetReset.Earliest,
+                            EnablePartitionEof = true
+                        })
+                    .SetErrorHandler((_, e) => Console.WriteLine($"Error In Kafka Consumer {e.Code}, {e.Reason}"))
+                    .SetLogHandler((_, l) => Console.WriteLine($"{l.Message}"))
+                    .SetPartitionsAssignedHandler((c, partitions) =>
+                    {
+                        Console.WriteLine($"Assigned partitions: [{string.Join(", ", partitions)}]");
+                        // possibly manually specify start offsets or override the partition assignment provided by
+                        // the consumer group by returning a list of topic/partition/offsets to assign to, e.g.:
+                        // 
+                        // return partitions.Select(tp => new TopicPartitionOffset(tp, externalOffsets[tp]));
+                    })
+                    .SetPartitionsRevokedHandler((c, partitions) =>
+                    {
+                        Console.WriteLine($"Revoking assignment: [{string.Join(", ", partitions)}]");
+                    })
+                    .Build();
+                _consumer.Subscribe(_subscription.Topic);
+                Console.WriteLine($"Kafka Service is now actively listening to Topics {_subscription.Topic}");
             }
             catch (Exception e)
             {
@@ -59,34 +87,35 @@ namespace KafkaBasicSubscriber.Services.Subscriber
         }
 
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
-                try
+                while (true)
                 {
-                    var subWrapper = new SubscribeWrapper(
-                        new ConsumerConfig
+                    try
+                    {
+                        var consumeResult = _consumer.Consume(stoppingToken);
+                        if (consumeResult.IsPartitionEOF)
                         {
-                            BootstrapServers = GenerateKafkaBrokerString(_option),
-                            GroupId = _option.GroupId,
-                            EnableAutoCommit = true,
-                            StatisticsIntervalMs = 10000,
-                            SessionTimeoutMs = 10000,
-                            AutoOffsetReset = AutoOffsetReset.Earliest,
-                            EnablePartitionEof = true
-                        },
-                        _subscription.Topic
-                    );
-                    subWrapper.ReadMessage();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error Reading: {e.Message}");
+                            Console.WriteLine($"Reached the end of partition");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Received message, Topic {consumeResult.Topic}, Partition {consumeResult.Partition}, Offset Position {consumeResult.Offset}: {consumeResult.Value}");
+                        }
+                    }
+                    catch (ConsumeException e)
+                    {
+                        Console.WriteLine($"Consume error: {e.Error.Reason}");
+                    }
                 }
             }
-
-            return null;
+            catch (OperationCanceledException)
+            {
+                Console.WriteLine("Closing consumer.");
+                _consumer.Close();
+            }
         }
     }
 }
