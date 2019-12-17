@@ -1,9 +1,10 @@
 ---
-version: '2.1'
+version: '3.7'
 services:
   schema-registry:
     image: confluentinc/cp-schema-registry:latest
     network_mode: host
+    restart: unless-stopped
     environment:
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_KAFKSTORE_BOOTSTRAP_SERVERS: "PLAINTEXT://kafka2:49093"
@@ -13,6 +14,7 @@ services:
   rest-proxy:
     image: confluentinc/cp-kafka-rest:latest
     network_mode: host
+    restart: unless-stopped
     environment:
       KAFKA_REST_HOST_NAME: rest-proxy
       KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka1:19092,kafka1:29092,kafka1:39092,kafka2:49092,kafka3:59092'
