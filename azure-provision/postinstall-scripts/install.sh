@@ -39,5 +39,5 @@ git clone https://github.com/bockyanggoh/kafka-workshop.git /workspace/kafka-wor
 find /workspace/kafka-workshop -name "*.sh" -exec chmod +x {} \;
 cp /home/kafka/.bash* /workspace/
 # Set new home
-usermod -m -d /workspace kafka
+usermod -m -d /workspace kafka | true
 chown -R kafka:kafka /workspace

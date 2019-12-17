@@ -68,7 +68,8 @@
       "apiVersion": "2018-06-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-          "[variables('nic1')]"
+          "[variables('nic1')]",
+          "[resourceId('Microsoft.Network/networkInterfaces/', variables('nic1'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -109,7 +110,8 @@
       "apiVersion": "2018-06-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-          "[variables('nic1')]"
+          "[variables('nic2')]",
+          "[resourceId('Microsoft.Network/networkInterfaces/', variables('nic2'))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -181,7 +183,9 @@
       "dependsOn": [
           "[variables('publicIPAddress1Name')]",
           "[variables('networkSecurityGroup1Name')]",
-          "[variables('virtualNetworkName')]"
+          "[variables('virtualNetworkName')]",
+          "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress1Name'))]",
+          "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
           "ipConfigurations": [
@@ -212,7 +216,8 @@
       "dependsOn": [
           "[variables('publicIPAddress2Name')]",
           "[variables('networkSecurityGroup2Name')]",
-          "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+          "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress2Name'))]",
+          "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
           "ipConfigurations": [
@@ -234,27 +239,21 @@
     {
       "name": "[variables('publicIPAddress1Name')]",
       "type": "Microsoft.Network/publicIpAddresses",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2018-11-01",
       "location": "[resourceGroup().location]",
       "comments": "Public IP for Primary NIC",
       "properties": {
-          "publicIpAllocationMethod": "Dynamic",
-          "dnsSettings": {
-            "domainNameLabel": "kafka1-workshop"
-          }
+          "publicIpAllocationMethod": "Dynamic"
       }
     },
     {
       "name": "[variables('publicIPAddress2Name')]",
       "type": "Microsoft.Network/publicIpAddresses",
-      "apiVersion": "2018-08-01",
+      "apiVersion": "2018-11-01",
       "location": "[resourceGroup().location]",
       "comments": "Public IP for Primary NIC",
       "properties": {
-          "publicIpAllocationMethod": "Dynamic",
-          "dnsSettings": {
-            "domainNameLabel": "kafka2-workshop"
-          }
+          "publicIpAllocationMethod": "Dynamic"
       }
     },
     {
