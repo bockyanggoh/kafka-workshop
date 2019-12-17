@@ -41,3 +41,6 @@ cp /home/kafka/.bash* /workspace/
 # Set new home
 usermod -m -d /workspace kafka | true
 chown -R kafka:kafka /workspace
+
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
