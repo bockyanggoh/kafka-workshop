@@ -5,6 +5,7 @@ az group deployment create --resource-group 'kafka-rg' --template-file azure-pro
 echo "Waiting for 1 minute for Azure to complete background tasks."
 sleep 60s
 
+echo "Running Post-Installation scripts"
 nohup az vm run-command invoke -g 'kafka-rg' -n 'kafka1' --command-id RunShellScript --scripts @azure-provision/postinstall-scripts/install.sh &
 az vm run-command invoke -g 'kafka-rg' -n 'kafka2' --command-id RunShellScript --scripts @azure-provision/postinstall-scripts/install.sh
 
