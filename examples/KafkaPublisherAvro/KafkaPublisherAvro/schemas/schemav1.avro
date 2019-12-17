@@ -1,0 +1,9 @@
+{
+    "type": "record",
+    "namespace": "kafka.workshop.AvroGeneric",
+    "name": "JustAMessage",
+    "fields": [
+        { "name": "Title", "type": "string"},
+        { "name": "Message", "type": "string"}
+    ]
+}
