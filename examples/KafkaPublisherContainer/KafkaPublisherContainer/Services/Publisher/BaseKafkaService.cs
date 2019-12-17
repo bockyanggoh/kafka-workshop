@@ -11,15 +11,19 @@ namespace KafkaPublisherContainer.Services.Publisher
     public class BaseKafkaService
     {
         private readonly ProducerConfig _producerConfig;
+        private readonly string _defaultBrokerString;
         public BaseKafkaService(IOptions<KafkaOption> option)
         {
             Console.WriteLine(JsonConvert.SerializeObject(option));
             try
             {
+                _defaultBrokerString = GenerateKafkaBrokerString(option.Value);
                 _producerConfig = new ProducerConfig
                 {
-                    BootstrapServers = GenerateKafkaBrokerString(option.Value),
-                    RequestTimeoutMs = 5000,
+                    BootstrapServers = _defaultBrokerString,
+                    SocketTimeoutMs = 5000,
+                    MessageTimeoutMs = 3000,
+                    RequestTimeoutMs = 3000,
                 };
             }
             catch (Exception)
@@ -47,8 +51,10 @@ namespace KafkaPublisherContainer.Services.Publisher
             return bootstrapServers;
         }
 
-        public async Task<string> PublishToKafka(string message, string topic)
+        public async Task<string> PublishToKafka(string message, string topic, string broker="")
         {
+            if(!string.IsNullOrEmpty(broker))
+                _producerConfig.BootstrapServers = broker;
             using (var producer = new ProducerBuilder<string, string>(_producerConfig).Build())
             {
                 Console.WriteLine($"Producer {producer.Name} producing on topic {topic}.");
@@ -68,15 +74,20 @@ namespace KafkaPublisherContainer.Services.Publisher
                 catch (ProduceException<string, string> e)
                 {
                     Console.WriteLine($"failed to deliver message: {e.Message} [{e.Error.Code}]");
-                    return e.Message;
+                    return (e.Error.Code == ErrorCode.Local_MsgTimedOut) ?
+                        "Failed to deliver message to Kafka servers. Ensure the servers are available" : e.Message;
                 }
             }
 
             return "Failed to deliver message to Kafka servers. Ensure the servers are available";
         }
-        public async Task<string> PublishMultipleMessagesToKafka(List<string> messages, string topic)
+        public async Task<string> PublishMultipleMessagesToKafka(List<string> messages, string topic, string broker="default")
         {
-            using (var producer = new ProducerBuilder<string, string>(_producerConfig).Build())
+            if(!string.IsNullOrEmpty(broker))
+                _producerConfig.BootstrapServers = broker;
+            using (var producer = new ProducerBuilder<string, string>(_producerConfig)
+                .SetErrorHandler((_, e) => Console.WriteLine($"Error! {e.Reason}"))
+                .Build())
             {
                 Console.WriteLine($"Producer {producer.Name} producing on topic {topic}.");
 
@@ -94,8 +105,10 @@ namespace KafkaPublisherContainer.Services.Publisher
                 }
                 catch (ProduceException<string, string> e)
                 {
+                    
                     Console.WriteLine($"failed to deliver message: {e.Message} [{e.Error.Code}]");
-                    return e.Message;
+                    return (e.Error.Code == ErrorCode.Local_MsgTimedOut) ?
+                        "Failed to deliver message to Kafka servers. Ensure the servers are available" : e.Message;
                 }
             }
             return "Failed to deliver message to Kafka servers. Ensure the servers are available";
