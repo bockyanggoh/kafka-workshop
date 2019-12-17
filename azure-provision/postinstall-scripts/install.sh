@@ -37,7 +37,7 @@ rm -f /workspace/kafka_2.12-2.3.0.tgz
 # Download Kafka Workshop files
 git clone https://github.com/bockyanggoh/kafka-workshop.git /workspace/kafka-workshop
 find /workspace/kafka-workshop -name "*.sh" -exec chmod +x {} \;
-
+cp /home/kafka/.bash* /workspace/
 # Set new home
 usermod -m -d /workspace kafka
 chown -R kafka:kafka /workspace
