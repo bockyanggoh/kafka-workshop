@@ -6,6 +6,10 @@ kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-sql-avro-offsets --zookeeper kafka1:22181
 
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-avro-offsets --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki--config --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-avro-status --zookeeper kafka1:22181
+kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-config --zookeeper kafka1:22181
+kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-status --zookeeper kafka1:22181
+
+kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-azure-status --zookeeper kafka1:22181
+kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-azure-status --zookeeper kafka1:22181
+kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-azure-status --zookeeper kafka1:22181
 kafka-topics.sh --describe --zookeeper kafka1:22181
