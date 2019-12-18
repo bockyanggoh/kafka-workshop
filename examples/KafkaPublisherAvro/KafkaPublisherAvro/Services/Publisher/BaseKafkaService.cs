@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Avro;
@@ -17,13 +16,15 @@ namespace KafkaPublisherAvro.Services.Publisher
     public class BaseKafkaService
     {
         private readonly string _defaultBrokerString;
-        private readonly string _schemaRegistryUrl = "13.76.217.42:8081";
+        private readonly string _schemaRegistryUrl;
         public BaseKafkaService(IOptions<KafkaOption> option)
         {
             Console.WriteLine(JsonConvert.SerializeObject(option));
             try
             {
                 _defaultBrokerString = GenerateKafkaBrokerString(option.Value);
+                _schemaRegistryUrl =
+                    $"{option.Value.Servers.SchemaRegistry.PublicIp}:{option.Value.Servers.SchemaRegistry.Port}";
             }
             catch (Exception)
             {
@@ -34,11 +35,11 @@ namespace KafkaPublisherAvro.Services.Publisher
         private string GenerateKafkaBrokerString(KafkaOption option)
         {
             var bootstrapServers = "";
-            foreach (KafkaServer k in option.Servers)
+            foreach (KafkaBroker k in option.Servers.Brokers)
             {
-                foreach (string port in k.Ports)
+                foreach (var port in k.Ports)
                 {
-                    bootstrapServers += string.Format("{0}:{1},", k.PublicIp, port);
+                    bootstrapServers += $"{k.PublicIp}:{port},";
                 }
             }
 

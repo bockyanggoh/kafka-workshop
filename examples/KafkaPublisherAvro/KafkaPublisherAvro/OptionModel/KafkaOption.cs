@@ -4,7 +4,7 @@ namespace KafkaPublisherAvro.OptionModel
 {
     public class KafkaOption
     {
-        public List<KafkaServer> Servers { get; set; }
+        public KafkaServer Servers { get; set; }
         public List<KafkaSubscription> Subscriptions { get; set; }
         public List<KafkaPublisher> Publishers { get; set; }
         public string GroupId { get; set; }
@@ -13,8 +13,21 @@ namespace KafkaPublisherAvro.OptionModel
 
     public class KafkaServer
     {
+        public List<KafkaBroker> Brokers { get; set; }
+        public SchemaRegistry SchemaRegistry { get; set; }
+    }
+
+
+    public class KafkaBroker
+    {
         public string PublicIp { get; set; }
         public List<string> Ports { get; set; }
+    }
+
+    public class SchemaRegistry
+    {
+        public string PublicIp { get; set; }
+        public string Port { get; set; }
     }
 
     public class KafkaSubscription

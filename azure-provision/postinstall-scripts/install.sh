@@ -29,6 +29,8 @@ wget --directory-prefix=/workspace/ https://www-eu.apache.org/dist/kafka/2.3.0/k
 tar -C /workspace -xzf /workspace/kafka_2.12-2.3.0.tgz
 echo "export PATH=$PATH:/workspace/kafka_2.12-2.3.0/bin" > /etc/profile.d/kafka-path.sh
 echo "source /workspace/.bashrc" >> /etc/profile.d/kafka-path.sh
+echo "git config --global user.email kafka@workshop.com" >> /etc/profile.d/kafka-path.sh
+echo "git config --global user.name kafka" >> /etc/profile.d/kafka-path.sh
 chmod 777 /etc/profile.d/kafka-path.sh
 chown root:root /etc/profile.d/kafka-path.sh
 
