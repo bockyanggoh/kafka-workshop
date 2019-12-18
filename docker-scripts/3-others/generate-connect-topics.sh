@@ -1,3 +1,5 @@
+kafka-topics.sh --create --replication-factor 2 --partitions 2 --topic dead --zookeeper kafka1:22181
+
 kafka-topics.sh --create --replication-factor 3 --partitions 3 --topic SuperAvro --zookeeper kafka1:22181
 kafka-topics.sh --create --replication-factor 3 --partitions 3 --topic SuperEasy --zookeeper kafka1:22181
 
