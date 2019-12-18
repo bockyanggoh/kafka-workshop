@@ -20,23 +20,9 @@ services:
       KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://kafka2:8081'
   lenses:
-    image: lensesio/lenses
+    image: obsidiandynamics/kafdrop
     network_mode: host
     environment:
-      LENSES_PORT: 9991
-      LENSES_KAFKA_BROKERS: "PLAINTEXT://kafka1:19092,PLAINTEXT://kafka1:29092,PLAINTEXT://kafka1:39092,PLAINTEXT://kafka2:49092,PLAINTEXT://kafka2:59092"
-      LENSES_SCHEMA_REGISTRY_URLS: |
-        [
-          {url:"http://kafka2:8081"}
-        ]
-      LENSES_ZOOKEEPER_HOSTS: |
-        [
-          {url:"kafka1:12181"},
-          {url:"kafka1:22181"},
-          {url:"kafka1:32181"},
-          {url:"kafka2:42181"},
-          {url:"kafka2:52181"}
-        ]
-      LENSES_SECURITY_USER: kafka
-      LENSES_SECURITY_PASSWORD: kafka-workshop
+      KAFKA_BROKERCONNECT: kafka1:19092,kafka1:29092,kafka1:39092,kafka2:49092,kafka2:59092
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
     network_mode: host
