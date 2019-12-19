@@ -24,7 +24,7 @@ Your server should now be up and running!
 2. After deciphering that, it will try to run your docker-compose detached and show you the logs of the docker-compose. This means it's safe to exit out of the logs without taking down the compose instances.
 
 [Zookeeper Config](server1.yml) is your configuration of zookeeper
-To view the full list of possible zookeeper configs: Refer to [this]: https://zookeeper.apache.org/doc/r3.3.3/zookeeperAdmin.html#sc_configuration
+To view the full list of possible zookeeper configs: Refer to [this](https://zookeeper.apache.org/doc/r3.3.3/zookeeperAdmin.html#sc_configuration).
 
 
 ### *Important Note*
@@ -32,5 +32,3 @@ For configurations in docker, Confluent/Apache implements this format: ZOOKEEPER
 
 For Example: dataDir
 In docker, the config will be **ZOOKEEPER_DATA_DIR**
-
-
