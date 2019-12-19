@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avro;
 using Avro.Generic;
+using Codegen.Avro.Models;
 using Confluent.Kafka;
+using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using KafkaPublisherAvro.OptionModel;
@@ -17,14 +19,21 @@ namespace KafkaPublisherAvro.Services.Publisher
     {
         private readonly string _defaultBrokerString;
         private readonly string _schemaRegistryUrl;
+        private readonly AvroSerializerConfig _avroSerializerConfig;
         public BaseKafkaService(IOptions<KafkaOption> option)
         {
             Console.WriteLine(JsonConvert.SerializeObject(option));
+            
             try
             {
                 _defaultBrokerString = GenerateKafkaBrokerString(option.Value);
                 _schemaRegistryUrl =
                     $"{option.Value.Servers.SchemaRegistry.PublicIp}:{option.Value.Servers.SchemaRegistry.Port}";
+                _avroSerializerConfig = new AvroSerializerConfig
+                {
+                    BufferBytes = 500,
+                    AutoRegisterSchemas = true
+                };
             }
             catch (Exception)
             {
@@ -51,7 +60,7 @@ namespace KafkaPublisherAvro.Services.Publisher
             return bootstrapServers;
         }
 
-        public async Task<string> PublishAvroMessage(PublishSingleRequest request)
+        public async Task<string> PublishGenericAvroMessage(PublishSingleRequest request)
         {
             var schema = (RecordSchema)RecordSchema.Parse(
                 @"{
@@ -92,7 +101,46 @@ namespace KafkaPublisherAvro.Services.Publisher
                         : $"Message sent to: {task.Result.TopicPartitionOffset}", cts.Token);
                 return res;
             }
+        }
 
+        public async Task<string> PublishSpecificAvroMessage(PublishSingleRequest request)
+        {
+            
+            var cts = new CancellationToken();
+            using (var schemaRegistry = new CachedSchemaRegistryClient(new SchemaRegistryConfig
+            {
+                Url = _schemaRegistryUrl,
+                RequestTimeoutMs = 5000,
+                MaxCachedSchemas = 10
+            }))
+            using (var producer =
+                new ProducerBuilder<string, MessageModel>(new ProducerConfig
+                    {
+                        BootstrapServers = _defaultBrokerString,
+                        SocketTimeoutMs = 5000,
+                        MessageTimeoutMs = 3000,
+                        RequestTimeoutMs = 3000,
+                    })
+                    .SetKeySerializer(new AvroSerializer<string>(schemaRegistry))
+                    .SetValueSerializer(new AvroSerializer<MessageModel>(schemaRegistry))
+                    .SetErrorHandler((_, e) => Console.WriteLine($"Error in Kafka: {e.Reason}"))
+                    .Build())
+            {
+                var msg = new MessageModel
+                {
+                    Title = request.Message.Title,
+                    Message = request.Message.Message,
+                    CorrelationId = Guid.NewGuid().ToString(),
+                    TransactionTs = DateTime.Now.ToString()
+                };
+                Console.WriteLine($"Pushing message to kafka. {JsonConvert.SerializeObject(msg)}");
+                var res = await producer.ProduceAsync(request.Topic, new Message<string, MessageModel>{Key = "Producer", Value = msg})
+                    .ContinueWith(task => task.IsFaulted
+                        ? $"error producing message: {task.Exception.Message}"
+                        : $"produced to: {task.Result.TopicPartitionOffset}", cts);
+
+                return res;
+            }
         }
     }
 }

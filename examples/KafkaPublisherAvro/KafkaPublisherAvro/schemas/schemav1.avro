@@ -1,6 +1,6 @@
 {
     "type": "record",
-    "namespace": "kafka.workshop.AvroGeneric",
+    "namespace": "Kafka.Workshop.Avro",
     "name": "JustAMessage",
     "fields": [
         { "name": "Title", "type": "string"},

@@ -16,12 +16,23 @@ namespace KafkaPublisherAvro.Controllers
             _publisher = publisher;
         }
 
-        [HttpPost("publish/single")]
+        [HttpPost("publish/generic")]
         [Produces("application/json")]
         [Consumes("application/json")]
-        public async Task<IActionResult> FireMessage([FromBody]PublishSingleRequest request)
+        public async Task<IActionResult> FireGenericMessage([FromBody]PublishSingleRequest request)
         {
-            var res = await _publisher.PublishAvroMessage(request);
+            var res = await _publisher.PublishGenericAvroMessage(request);
+            return res == "Ok"
+                ? Ok(new StandardResponse("Successfully published message"))
+                : StatusCode(500, new StandardResponse(res));
+        }
+
+        [HttpPost("publish/specific")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        public async Task<IActionResult> FireSpecificMessage([FromBody] PublishSingleRequest request)
+        {
+            var res = await _publisher.PublishSpecificAvroMessage(request);
             return res == "Ok"
                 ? Ok(new StandardResponse("Successfully published message"))
                 : StatusCode(500, new StandardResponse(res));
