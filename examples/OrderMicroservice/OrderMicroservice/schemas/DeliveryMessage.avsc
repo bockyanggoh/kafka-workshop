@@ -1,0 +1,35 @@
+{
+    "type": "record",
+    "namespace": "Kafka.Communication.Models",
+    "name": "DeliveryMessage",
+    "fields": [
+    { 
+        "name": "CorrelationId",
+        "doc": "Correlation Request Id for this order",
+        "type": "string"
+    },
+    {
+        "name": "OrderIds",
+        "doc": "Order Ids for this order",
+        "type": {
+            "type": "array",
+            "items": "string"
+        }
+    },
+    { 
+        "name": "Username",
+        "doc": "Username of requestor",
+        "type": "string"
+    },
+    { 
+        "name": "PreferredDeliveryDate",
+        "doc": "Preferred Delivery Date for items",
+        "type": "string"
+    },
+    { 
+        "name": "RequestedTs",
+        "doc": "Timestamp of Request",
+        "type": "string"
+    }
+    ]
+}
