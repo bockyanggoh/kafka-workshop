@@ -26,6 +26,8 @@ namespace KafkaConsumerAvro.Services.Subscriber
             {
                 BootstrapServers = GenerateKafkaBrokerString(_option),
                 GroupId = "AvroGenericListener",
+                EnableAutoCommit = true,
+                AutoOffsetReset = AutoOffsetReset.Earliest
             };
             _schemaRegistryConfig = new SchemaRegistryConfig
             {
@@ -47,6 +49,7 @@ namespace KafkaConsumerAvro.Services.Subscriber
                     .Build())
             {
                 consumer.Subscribe("SuperAvroSpecific");
+                
                 try
                 {
                     while (true)
@@ -54,6 +57,7 @@ namespace KafkaConsumerAvro.Services.Subscriber
                         try
                         {
                             var consumeResult = consumer.Consume(stoppingToken);
+                            Console.WriteLine($"Current offset position: {consumeResult.Offset.Value}");
                             Console.WriteLine(
                                 $"Received message offset {consumeResult.Offset.Value} " +
                                 $"Key: {consumeResult.Key} Partition: {consumeResult.Partition.Value}: {JsonConvert.SerializeObject(consumeResult.Message.Value)}");
@@ -62,15 +66,18 @@ namespace KafkaConsumerAvro.Services.Subscriber
                         {
                             Console.WriteLine($"Consume error: {e.Error.Code}, {e.Error.Reason}");
                         }
+                        
+                        
                     }
                 }
                 catch (OperationCanceledException)
                 {
+                    Console.WriteLine("Forced cancel on listener");
                     consumer.Close();
                 }
             }
 
-            return Task.CompletedTask;
+            return null;
         }
 
 
