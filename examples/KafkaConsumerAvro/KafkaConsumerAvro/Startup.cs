@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KafkaConsumerAvro.Services.Subscriber;
+using KafkaPublisherAvro.OptionModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -25,6 +27,11 @@ namespace KafkaConsumerAvro
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddOptions();
+            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.AddSingleton<IHostedService, SubscribeAvroSpecific>();
+            services.AddSingleton<IHostedService, SubscribeAvroGeneric>();
             services.AddControllers();
         }
 
@@ -35,6 +42,9 @@ namespace KafkaConsumerAvro
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.ApplicationServices.GetService<SubscribeAvroGeneric>();
+            app.ApplicationServices.GetService<SubscribeAvroSpecific>();
 
             app.UseHttpsRedirection();
 
