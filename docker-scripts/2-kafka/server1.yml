@@ -34,6 +34,7 @@ services:
   kafka-3:
     image: confluentinc/cp-kafka:latest
     network_mode: host
+    restart: unless-stopped
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: ${HOSTNAME}:12181,${HOSTNAME}:22181,${HOSTNAME}:32181,${ZK_O_HOSTNAME}:42181,${ZK_O_HOSTNAME}:52181

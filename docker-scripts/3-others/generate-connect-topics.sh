@@ -15,4 +15,5 @@ kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-azure-config --zookeeper kafka1:22181
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-azure-status --zookeeper kafka1:22181
 
+
 kafka-topics.sh --describe --zookeeper kafka1:22181
