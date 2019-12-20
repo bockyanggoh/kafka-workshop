@@ -54,7 +54,7 @@ namespace OrderMicroservice
                         });
                 });
             
-            services.AddSingleton<IItemRepository, ItemRepository>();
+            services.AddScoped<IItemRepository, ItemRepository>();
 
             services.AddControllers();
         }

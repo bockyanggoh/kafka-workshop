@@ -11,7 +11,6 @@ namespace OrderMicroservice.Controllers
     public class OrderController : ControllerBase
     {
         private readonly KafkaOrdersService _ordersService;
-
         public OrderController(KafkaOrdersService ordersService)
         {
             _ordersService = ordersService;

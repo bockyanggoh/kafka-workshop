@@ -3,16 +3,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
-using OrderMicroservice.Infrastructure.Repositories;
 using OrderMicroservice.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
 {
     public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, CreateItemResponse<ItemEntity>>
     {
-        private readonly ItemRepository _itemRepository;
+        private readonly IItemRepository _itemRepository;
 
-        public CreateItemCommandHandler(ItemRepository itemRepository)
+        public CreateItemCommandHandler(IItemRepository itemRepository)
         {
             _itemRepository = itemRepository;
         }
