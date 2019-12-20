@@ -8,7 +8,10 @@ namespace OrderMicroservice.Infrastructure.EntityConfiguration
     {
         public void Configure(EntityTypeBuilder<ItemEntity> builder)
         {
+            builder.ToTable("tbl_items");
             builder.HasKey(i => i.ItemId);
+            builder.HasIndex(i => i.ItemName)
+                .IsUnique();
             builder.HasIndex(i => i.ItemId);
 
             builder.Property(i => i.ItemId)
