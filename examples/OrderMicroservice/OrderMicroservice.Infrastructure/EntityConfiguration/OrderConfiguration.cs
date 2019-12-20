@@ -11,8 +11,6 @@ namespace OrderMicroservice.Infrastructure.EntityConfiguration
             builder.ToTable("tbl_orders");
             builder.HasKey(i => i.OrderId);
             builder.HasIndex(i => i.Username);
-            builder.HasMany(i => i.Items)
-                .WithOne(i => i.OrderEntity).IsRequired().OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(i => i.Username).HasColumnName("username").HasColumnType("varchar(64)");
             builder.Property(i => i.CreatedTs).HasColumnName("created_ts").HasDefaultValueSql("GetDate()");

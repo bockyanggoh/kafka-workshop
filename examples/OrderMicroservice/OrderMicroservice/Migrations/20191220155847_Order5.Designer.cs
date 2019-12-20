@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderMicroservice.Infrastructure;
 
 namespace OrderMicroservice.Migrations
 {
     [DbContext(typeof(OrdersDBContext))]
-    partial class OrdersDBContextModelSnapshot : ModelSnapshot
+    [Migration("20191220155847_Order5")]
+    partial class Order5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

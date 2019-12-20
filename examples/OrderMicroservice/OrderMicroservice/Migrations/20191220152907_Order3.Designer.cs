@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderMicroservice.Infrastructure;
 
 namespace OrderMicroservice.Migrations
 {
     [DbContext(typeof(OrdersDBContext))]
-    partial class OrdersDBContextModelSnapshot : ModelSnapshot
+    [Migration("20191220152907_Order3")]
+    partial class Order3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,6 +87,9 @@ namespace OrderMicroservice.Migrations
                         .HasColumnName("item_id")
                         .HasColumnType("varchar(64)");
 
+                    b.Property<string>("OrderEntityOrderId")
+                        .HasColumnType("varchar(64)");
+
                     b.Property<string>("OrderId")
                         .IsRequired()
                         .HasColumnName("order_id")
@@ -95,7 +100,10 @@ namespace OrderMicroservice.Migrations
                     b.HasIndex("ItemId")
                         .IsUnique();
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderEntityOrderId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.ToTable("tbl_order_items");
                 });
@@ -108,9 +116,13 @@ namespace OrderMicroservice.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OrderMicroservice.Domain.AggregateModel.OrderEntity", "OrderEntity")
+                    b.HasOne("OrderMicroservice.Domain.AggregateModel.OrderEntity", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderEntityOrderId");
+
+                    b.HasOne("OrderMicroservice.Domain.AggregateModel.OrderEntity", "OrderEntity")
+                        .WithOne()
+                        .HasForeignKey("OrderMicroservice.Domain.AggregateModel.OrderItemEntity", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

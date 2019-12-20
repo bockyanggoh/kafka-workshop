@@ -7,7 +7,7 @@ using OrderMicroservice.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
 {
-    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, CreateItemResponse<ItemEntity>>
+    public class CreateItemCommandHandler : IRequestHandler<CreateItemCommand, ItemResponse<ItemEntity>>
     {
         private readonly IItemRepository _itemRepository;
 
@@ -16,7 +16,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
             _itemRepository = itemRepository;
         }
 
-        public async Task<CreateItemResponse<ItemEntity>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
+        public async Task<ItemResponse<ItemEntity>> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
             var itemId = Guid.NewGuid();
             try
@@ -30,7 +30,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
                 };
                 await _itemRepository.SaveItem(item);
                 
-                return new CreateItemResponse<ItemEntity>
+                return new ItemResponse<ItemEntity>
                 {
                     RequestStatus = "Success",
                     TransactionTs = item.DateCreated.ToString(),

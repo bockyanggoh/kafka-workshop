@@ -27,7 +27,7 @@ namespace OrderMicroservice.Infrastructure.Repositories
 
         public async Task<List<ItemEntity>> GetAllItems()
         {
-            return await _context.Items.Select(i => i).ToListAsync();
+            return await _context.Items.ToListAsync();
         }
 
         public Task SaveItem(ItemEntity item)

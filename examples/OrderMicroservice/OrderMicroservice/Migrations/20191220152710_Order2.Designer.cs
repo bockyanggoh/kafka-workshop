@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderMicroservice.Infrastructure;
 
 namespace OrderMicroservice.Migrations
 {
     [DbContext(typeof(OrdersDBContext))]
-    partial class OrdersDBContextModelSnapshot : ModelSnapshot
+    [Migration("20191220152710_Order2")]
+    partial class Order2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,21 +83,27 @@ namespace OrderMicroservice.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ItemId")
-                        .IsRequired()
                         .HasColumnName("item_id")
                         .HasColumnType("varchar(64)");
 
+                    b.Property<string>("OrderEntityOrderId")
+                        .HasColumnType("varchar(64)");
+
                     b.Property<string>("OrderId")
-                        .IsRequired()
                         .HasColumnName("order_id")
                         .HasColumnType("varchar(64)");
 
                     b.HasKey("OrderItemId");
 
                     b.HasIndex("ItemId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[item_id] IS NOT NULL");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderEntityOrderId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique()
+                        .HasFilter("[order_id] IS NOT NULL");
 
                     b.ToTable("tbl_order_items");
                 });
@@ -104,13 +112,15 @@ namespace OrderMicroservice.Migrations
                 {
                     b.HasOne("OrderMicroservice.Domain.AggregateModel.ItemEntity", "ItemEntity")
                         .WithOne()
-                        .HasForeignKey("OrderMicroservice.Domain.AggregateModel.OrderItemEntity", "ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrderMicroservice.Domain.AggregateModel.OrderItemEntity", "ItemId");
+
+                    b.HasOne("OrderMicroservice.Domain.AggregateModel.OrderEntity", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderEntityOrderId");
 
                     b.HasOne("OrderMicroservice.Domain.AggregateModel.OrderEntity", "OrderEntity")
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                        .WithOne()
+                        .HasForeignKey("OrderMicroservice.Domain.AggregateModel.OrderItemEntity", "OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

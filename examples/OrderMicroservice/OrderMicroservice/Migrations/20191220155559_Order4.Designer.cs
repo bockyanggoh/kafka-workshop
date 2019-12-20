@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderMicroservice.Infrastructure;
 
 namespace OrderMicroservice.Migrations
 {
     [DbContext(typeof(OrdersDBContext))]
-    partial class OrdersDBContextModelSnapshot : ModelSnapshot
+    [Migration("20191220155559_Order4")]
+    partial class Order4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,15 +87,21 @@ namespace OrderMicroservice.Migrations
                         .HasColumnName("item_id")
                         .HasColumnType("varchar(64)");
 
+                    b.Property<string>("OrderEntityOrderId")
+                        .IsRequired()
+                        .HasColumnType("varchar(64)");
+
                     b.Property<string>("OrderId")
                         .IsRequired()
                         .HasColumnName("order_id")
-                        .HasColumnType("varchar(64)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("OrderItemId");
 
                     b.HasIndex("ItemId")
                         .IsUnique();
+
+                    b.HasIndex("OrderEntityOrderId");
 
                     b.HasIndex("OrderId");
 
@@ -110,7 +118,7 @@ namespace OrderMicroservice.Migrations
 
                     b.HasOne("OrderMicroservice.Domain.AggregateModel.OrderEntity", "OrderEntity")
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderEntityOrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
