@@ -20,7 +20,7 @@ namespace OrderMicroservice.Infrastructure.Repositories
         {
             var item =
                 from i in _context.Items
-                where i.ItemId == Guid.Parse(id)
+                where i.ItemId == id
                 select i;
             return await item.FirstOrDefaultAsync();
         }

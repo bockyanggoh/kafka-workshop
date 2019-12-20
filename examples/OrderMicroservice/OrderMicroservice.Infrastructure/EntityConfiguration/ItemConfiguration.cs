@@ -9,15 +9,11 @@ namespace OrderMicroservice.Infrastructure.EntityConfiguration
         public void Configure(EntityTypeBuilder<ItemEntity> builder)
         {
             builder.HasKey(i => i.ItemId);
-            builder.HasIndex(i => i.Username);
             builder.HasIndex(i => i.ItemId);
 
             builder.Property(i => i.ItemId)
                 .HasColumnName("item_id")
                 .HasColumnType("varchar(64)");
-            builder.Property(i => i.Username)
-                .IsRequired()
-                .HasColumnName("username");
             builder.Property(i => i.ItemType)
                 .HasColumnName("item_type")
                 .HasColumnType("varchar(50)");
