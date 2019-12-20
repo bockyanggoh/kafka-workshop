@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderMicroservice", "OrderM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderMicroservice.Infrastructure", "OrderMicroservice.Infrastructure\OrderMicroservice.Infrastructure.csproj", "{E588DCA3-5033-4DA6-9B42-0003F63E43F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderMicroservice.Domain", "OrderMicroservice.Domain\OrderMicroservice.Domain.csproj", "{C2AB3689-1C0F-4252-B378-729C7CA838EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{E588DCA3-5033-4DA6-9B42-0003F63E43F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E588DCA3-5033-4DA6-9B42-0003F63E43F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E588DCA3-5033-4DA6-9B42-0003F63E43F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2AB3689-1C0F-4252-B378-729C7CA838EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2AB3689-1C0F-4252-B378-729C7CA838EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2AB3689-1C0F-4252-B378-729C7CA838EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2AB3689-1C0F-4252-B378-729C7CA838EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
