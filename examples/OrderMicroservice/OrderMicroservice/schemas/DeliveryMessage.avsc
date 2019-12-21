@@ -21,9 +21,9 @@
         "doc": "Username of requestor",
         "type": "string"
     },
-    { 
-        "name": "PreferredDeliveryDate",
-        "doc": "Preferred Delivery Date for items",
+    {
+        "name": "PaymentStatus",
+        "doc": "Payment Status for Order",
         "type": "string"
     },
     { 

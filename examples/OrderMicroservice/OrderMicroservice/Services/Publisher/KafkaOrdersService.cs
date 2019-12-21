@@ -23,23 +23,17 @@ namespace OrderMicroservice.Services.Publisher
 
         public async Task<KafkaPublishStatus> CreateDeliveryRequest(OrderUserRequest request)
         {
-            if (request.PreferredDeliveryDate.ToUniversalTime() > DateTime.Now)
+            var msg = new DeliveryMessage
             {
-                var msg = new DeliveryMessage
-                {
-                    CorrelationId = Guid.NewGuid().ToString(),
-                    OrderIds = request.OrderIds,
-                    PreferredDeliveryDate = request.PreferredDeliveryDate.ToString(DATETIME_FORMAT),
-                    Username = request.Username,
-                    RequestedTs = DateTime.Now.ToString(DATETIME_FORMAT)
-                };
+                CorrelationId = Guid.NewGuid().ToString(),
+                OrderIds = request.OrderIds,
+                Username = request.Username,
+                RequestedTs = DateTime.Now.ToString(DATETIME_FORMAT)
+            };
 
-                var res = await SendMessage(msg, msg.CorrelationId);
-                Console.WriteLine($"Response from Kafka: {JsonConvert.SerializeObject(res)}");
-                return res;
-            }
-            
-            throw new InvalidDateException("Specified Delivery Date is before current time.");
+            var res = await SendMessage(msg, msg.CorrelationId);
+            Console.WriteLine($"Response from Kafka: {JsonConvert.SerializeObject(res)}");
+            return res;
         }
     }
 }

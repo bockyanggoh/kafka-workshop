@@ -10,7 +10,5 @@ namespace OrderMicroservice.RequestModel
         public string Username { get; set; }
         [Required]
         public List<string> OrderIds { get; set; }
-        [Required]
-        public DateTime PreferredDeliveryDate { get; set; }
     }
 }
