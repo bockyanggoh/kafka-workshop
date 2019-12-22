@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure.Repositories;
-using OrderMicroservice.ResponseModel;
+using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Queries.GetItemsQuery
 {
@@ -20,10 +20,10 @@ namespace OrderMicroservice.Mediatr.Queries.GetItemsQuery
 
         public async Task<ItemResponse<List<ItemEntity>>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
         {
-            var res = await _itemRepository.GetAllItems();
+            var res = await _itemRepository.FindAllItems();
             return new ItemResponse<List<ItemEntity>>
             {
-                RequestStatus = "Success",
+                RequestStatus = CustomEnum.RequestStatus.Success,
                 TransactionTs = DateTime.Now.ToString(),
                 ItemData = res
             };

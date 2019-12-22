@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace KafkaPublisherAvro.OptionModel
+namespace OrderMicroservice.OptionModel
 {
     public class KafkaOption
     {

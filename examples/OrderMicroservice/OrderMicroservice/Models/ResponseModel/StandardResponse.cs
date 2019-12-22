@@ -1,6 +1,6 @@
 using System;
 
-namespace KafkaPublisherAvro.ResponseModel
+namespace OrderMicroservice.Models.ResponseModel
 {
     public class StandardResponse
     {

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderMicroservice.Infrastructure;
 
 namespace OrderMicroservice.Migrations
 {
     [DbContext(typeof(OrdersDBContext))]
-    partial class OrdersDBContextModelSnapshot : ModelSnapshot
+    [Migration("20191222165719_Order6")]
+    partial class Order6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,10 +26,6 @@ namespace OrderMicroservice.Migrations
                     b.Property<string>("ItemId")
                         .HasColumnName("item_id")
                         .HasColumnType("varchar(64)");
-
-                    b.Property<double>("CostPrice")
-                        .HasColumnName("cost_price")
-                        .HasColumnType("float");
 
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()

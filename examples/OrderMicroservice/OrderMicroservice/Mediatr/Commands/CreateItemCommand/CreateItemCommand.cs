@@ -1,6 +1,6 @@
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
-using OrderMicroservice.ResponseModel;
+using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
 {
@@ -8,6 +8,6 @@ namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
     {
         public string ItemName { get; set; }
         public ItemType ItemType { get; set; }
-        public string Username { get; set; }
+        public double CostPrice { get; set; }
     }
 }

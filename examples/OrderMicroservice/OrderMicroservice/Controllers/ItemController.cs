@@ -13,7 +13,6 @@ namespace OrderMicroservice.Controllers
     [ApiController]
     public class ItemController : ControllerBase
     {
-        
         private readonly IMediator _mediator;
 
         public ItemController(IMediator mediator)
@@ -27,7 +26,6 @@ namespace OrderMicroservice.Controllers
             var res = await _mediator.Send(new CreateItemCommand
             {
                 ItemName = request.ItemName,
-                Username = request.Username,
                 ItemType = request.ItemType
             });
             

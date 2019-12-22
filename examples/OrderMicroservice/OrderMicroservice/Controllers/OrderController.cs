@@ -19,7 +19,7 @@ namespace OrderMicroservice.Controllers
         [HttpPost("/order")]
         public async Task<IActionResult> CreateOrderApi([FromBody] OrderUserRequest request)
         {
-            var res = await _ordersService.CreateDeliveryRequest(request);
+            var res = await _ordersService.CreatePaymentRequest(request);
             return res.Success ? Ok(res) : StatusCode(500, res);
         }
 

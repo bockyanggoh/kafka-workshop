@@ -9,6 +9,11 @@
         "type": "string"
     },
     {
+        "name": "RequestType",
+        "doc": "Type of Request",
+        "type": "string"
+    },
+    {
         "name": "OrderIds",
         "doc": "Order Ids for this order",
         "type": {

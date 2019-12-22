@@ -1,4 +1,4 @@
-namespace OrderMicroservice.ResponseModel
+namespace OrderMicroservice.Models.ResponseModel
 {
     public class KafkaPublishStatus
     {

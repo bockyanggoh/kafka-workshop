@@ -15,11 +15,15 @@ namespace Kafka.Communication.Models
 	
 	public partial class DeliveryMessage : ISpecificRecord
 	{
-		public static Schema _SCHEMA = Schema.Parse(@"{""type"":""record"",""name"":""DeliveryMessage"",""namespace"":""Kafka.Communication.Models"",""fields"":[{""name"":""CorrelationId"",""doc"":""Correlation Request Id for this order"",""type"":""string""},{""name"":""OrderIds"",""doc"":""Order Ids for this order"",""type"":{""type"":""array"",""items"":""string""}},{""name"":""Username"",""doc"":""Username of requestor"",""type"":""string""},{""name"":""PaymentStatus"",""doc"":""Payment Status for Order"",""type"":""string""},{""name"":""RequestedTs"",""doc"":""Timestamp of Request"",""type"":""string""}]}");
+		public static Schema _SCHEMA = Schema.Parse(@"{""type"":""record"",""name"":""DeliveryMessage"",""namespace"":""Kafka.Communication.Models"",""fields"":[{""name"":""CorrelationId"",""doc"":""Correlation Request Id for this order"",""type"":""string""},{""name"":""RequestType"",""doc"":""Type of Request"",""type"":""string""},{""name"":""OrderIds"",""doc"":""Order Ids for this order"",""type"":{""type"":""array"",""items"":""string""}},{""name"":""Username"",""doc"":""Username of requestor"",""type"":""string""},{""name"":""PaymentStatus"",""doc"":""Payment Status for Order"",""type"":""string""},{""name"":""RequestedTs"",""doc"":""Timestamp of Request"",""type"":""string""}]}");
 		/// <summary>
 		/// Correlation Request Id for this order
 		/// </summary>
 		private string _CorrelationId;
+		/// <summary>
+		/// Type of Request
+		/// </summary>
+		private string _RequestType;
 		/// <summary>
 		/// Order Ids for this order
 		/// </summary>
@@ -55,6 +59,20 @@ namespace Kafka.Communication.Models
 			set
 			{
 				this._CorrelationId = value;
+			}
+		}
+		/// <summary>
+		/// Type of Request
+		/// </summary>
+		public string RequestType
+		{
+			get
+			{
+				return this._RequestType;
+			}
+			set
+			{
+				this._RequestType = value;
 			}
 		}
 		/// <summary>
@@ -118,10 +136,11 @@ namespace Kafka.Communication.Models
 			switch (fieldPos)
 			{
 			case 0: return this.CorrelationId;
-			case 1: return this.OrderIds;
-			case 2: return this.Username;
-			case 3: return this.PaymentStatus;
-			case 4: return this.RequestedTs;
+			case 1: return this.RequestType;
+			case 2: return this.OrderIds;
+			case 3: return this.Username;
+			case 4: return this.PaymentStatus;
+			case 5: return this.RequestedTs;
 			default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
 			};
 		}
@@ -130,10 +149,11 @@ namespace Kafka.Communication.Models
 			switch (fieldPos)
 			{
 			case 0: this.CorrelationId = (System.String)fieldValue; break;
-			case 1: this.OrderIds = (IList<System.String>)fieldValue; break;
-			case 2: this.Username = (System.String)fieldValue; break;
-			case 3: this.PaymentStatus = (System.String)fieldValue; break;
-			case 4: this.RequestedTs = (System.String)fieldValue; break;
+			case 1: this.RequestType = (System.String)fieldValue; break;
+			case 2: this.OrderIds = (IList<System.String>)fieldValue; break;
+			case 3: this.Username = (System.String)fieldValue; break;
+			case 4: this.PaymentStatus = (System.String)fieldValue; break;
+			case 5: this.RequestedTs = (System.String)fieldValue; break;
 			default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
 			};
 		}

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
-using OrderMicroservice.ResponseModel;
+using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Queries.GetItemQuery
 {
@@ -23,7 +23,7 @@ namespace OrderMicroservice.Mediatr.Queries.GetItemQuery
 
             return new ItemResponse<ItemEntity>
             {
-                RequestStatus = "Success",
+                RequestStatus = CustomEnum.RequestStatus.Success,
                 TransactionTs = DateTime.Now.ToString(),
                 ItemData = res
             };

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
-using OrderMicroservice.ResponseModel;
+using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
 {
@@ -26,13 +26,14 @@ namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand
                     ItemId = itemId.ToString(),
                     DateCreated = DateTime.Now,
                     ItemName = request.ItemName,
-                    ItemType = request.ItemType
+                    ItemType = request.ItemType,
+                    CostPrice = request.CostPrice
                 };
                 await _itemRepository.SaveItem(item);
                 
                 return new ItemResponse<ItemEntity>
                 {
-                    RequestStatus = "Success",
+                    RequestStatus = CustomEnum.RequestStatus.Success,
                     TransactionTs = item.DateCreated.ToString(),
                     ItemData = item
                 };

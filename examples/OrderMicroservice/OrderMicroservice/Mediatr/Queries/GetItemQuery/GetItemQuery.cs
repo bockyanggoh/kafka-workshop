@@ -1,6 +1,6 @@
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
-using OrderMicroservice.ResponseModel;
+using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Queries.GetItemQuery
 {

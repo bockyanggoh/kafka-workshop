@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -24,6 +24,10 @@
     <ItemGroup>
       <ProjectReference Include="..\OrderMicroservice.Domain\OrderMicroservice.Domain.csproj" />
       <ProjectReference Include="..\OrderMicroservice.Infrastructure\OrderMicroservice.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\CustomEnum" />
     </ItemGroup>
 
 

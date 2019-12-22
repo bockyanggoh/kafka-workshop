@@ -7,12 +7,12 @@ using Avro.Generic;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
-using KafkaPublisherAvro.OptionModel;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using OrderMicroservice.Models.ResponseModel;
+using OrderMicroservice.OptionModel;
 using OrderMicroservice.RequestModel;
-using OrderMicroservice.ResponseModel;
 
 namespace OrderMicroservice.Services.Publisher
 {

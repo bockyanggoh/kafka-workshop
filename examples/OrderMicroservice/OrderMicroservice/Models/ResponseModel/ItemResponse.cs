@@ -1,8 +1,8 @@
-namespace OrderMicroservice.ResponseModel
+namespace OrderMicroservice.Models.ResponseModel
 {
     public class ItemResponse<T> where T : class
     {
-        public string RequestStatus { get; set; }
+        public CustomEnum.RequestStatus RequestStatus { get; set; }
         public string TransactionTs { get; set; }
         public T ItemData { get; set; }
     }

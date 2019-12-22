@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Kafka.Communication.Models;
-using KafkaPublisherAvro.OptionModel;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OrderMicroservice.Exceptions;
+using OrderMicroservice.Models.ResponseModel;
+using OrderMicroservice.OptionModel;
 using OrderMicroservice.RequestModel;
-using OrderMicroservice.ResponseModel;
 
 namespace OrderMicroservice.Services.Publisher
 {
@@ -21,7 +21,7 @@ namespace OrderMicroservice.Services.Publisher
         {
         }
 
-        public async Task<KafkaPublishStatus> CreateDeliveryRequest(OrderUserRequest request)
+        public async Task<KafkaPublishStatus> CreatePaymentRequest(OrderUserRequest request)
         {
             var msg = new DeliveryMessage
             {

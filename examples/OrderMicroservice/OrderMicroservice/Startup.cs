@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using KafkaPublisherAvro.OptionModel;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
+using OrderMicroservice.OptionModel;
 using OrderMicroservice.Services.Publisher;
 
 namespace OrderMicroservice
