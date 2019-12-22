@@ -27,9 +27,9 @@ namespace OrderMicroservice.Controllers
             });
             
             if(res.RequestStatus == CustomEnum.RequestStatus.Success)
-                return Ok(request);
+                return Ok(res);
 
-            return BadRequest(request);
+            return BadRequest(res);
         }
     }
 }

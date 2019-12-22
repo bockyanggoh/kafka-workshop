@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
 using Kafka.Communication.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using OrderMicroservice.Mediatr.Commands.CreateOrderCommand;
 using OrderMicroservice.RequestModel;
 using OrderMicroservice.Services.Publisher;
 
@@ -10,20 +12,28 @@ namespace OrderMicroservice.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IMediator _mediatr;
         private readonly KafkaOrdersService _ordersService;
-        public OrderController(KafkaOrdersService ordersService)
+        public OrderController(IMediator mediatr, KafkaOrdersService ordersService)
         {
             _ordersService = ordersService;
+            _mediatr = mediatr;
         }
 
-        [HttpPost("/order")]
+        [HttpPut]
         public async Task<IActionResult> CreateOrderApi([FromBody] OrderUserRequest request)
         {
-            var res = await _ordersService.CreatePaymentRequest(request);
-            return res.Success ? Ok(res) : StatusCode(500, res);
+            var res = await _mediatr.Send(new CreateOrderCommand
+            {
+                Username = request.Username,
+                OrderItemIds = request.OrderIds
+            });
+            if (res.RequestStatus == CustomEnum.RequestStatus.Success)
+                return Ok(res);
+            return StatusCode(500, res);
         }
 
-        [HttpGet("/order/status/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> CheckOrderStatusApi()
         {
             return Ok("Placeholder");

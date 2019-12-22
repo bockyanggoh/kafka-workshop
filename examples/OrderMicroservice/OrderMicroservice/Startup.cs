@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
@@ -55,7 +56,9 @@ namespace OrderMicroservice
                 });
             
             services.AddScoped<IItemRepository, ItemRepository>();
-
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddMvc()
+                .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
             services.AddControllers();
         }
 

@@ -1,0 +1,37 @@
+﻿{
+    "type": "record",
+    "namespace": "Kafka.Communication.Models",
+    "name": "CreatePaymentRequest",
+    "fields": [
+    { 
+        "name": "CorrelationId",
+        "doc": "Correlation Request Id for this order",
+        "type": "string"
+    },
+    {
+        "name": "RequestType",
+        "doc": "Type of Request",
+        "type": "string"
+    },
+    {
+        "name": "OrderId",
+        "doc": "Order Id for this order",
+        "type": "string"
+    },
+    { 
+        "name": "Username",
+        "doc": "Username of requestor",
+        "type": "string"
+    },
+    {
+        "name": "PaymentStatus",
+        "doc": "Payment Status for Order",
+        "type": "string"
+    },
+    { 
+        "name": "RequestedTs",
+        "doc": "Timestamp of Request",
+        "type": "string"
+    }
+    ]
+}
