@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Confluent.Apache.Avro" Version="1.7.7.7" />
+      <PackageReference Include="Confluent.Kafka" Version="1.3.0" />
+      <PackageReference Include="Confluent.SchemaRegistry" Version="1.3.0" />
+      <PackageReference Include="Confluent.SchemaRegistry.Serdes" Version="1.3.0" />
+      <PackageReference Include="MediatR" Version="7.0.0" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.0" />
+      <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc5" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0-rc5" />
+      <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\PaymentMicroservice.Domain\PaymentMicroservice.Domain.csproj" />
+      <ProjectReference Include="..\PaymentMicroservice.Infrastructure\PaymentMicroservice.Infrastructure.csproj" />
+    </ItemGroup>
+
+
+</Project>

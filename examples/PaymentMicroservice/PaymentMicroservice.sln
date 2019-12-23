@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentMicroservice", "PaymentMicroservice\PaymentMicroservice.csproj", "{2530B5ED-D82B-4368-BE29-337CE6C62E24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentMicroservice.Domain", "PaymentMicroservice.Domain\PaymentMicroservice.Domain.csproj", "{A2A7243B-99A4-40AA-9EF6-86CEBA3D4E70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentMicroservice.Infrastructure", "PaymentMicroservice.Infrastructure\PaymentMicroservice.Infrastructure.csproj", "{A4321B7F-B1A6-425F-B760-84BCEC4058D6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2530B5ED-D82B-4368-BE29-337CE6C62E24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2530B5ED-D82B-4368-BE29-337CE6C62E24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2530B5ED-D82B-4368-BE29-337CE6C62E24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2530B5ED-D82B-4368-BE29-337CE6C62E24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2A7243B-99A4-40AA-9EF6-86CEBA3D4E70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2A7243B-99A4-40AA-9EF6-86CEBA3D4E70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2A7243B-99A4-40AA-9EF6-86CEBA3D4E70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2A7243B-99A4-40AA-9EF6-86CEBA3D4E70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4321B7F-B1A6-425F-B760-84BCEC4058D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4321B7F-B1A6-425F-B760-84BCEC4058D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4321B7F-B1A6-425F-B760-84BCEC4058D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4321B7F-B1A6-425F-B760-84BCEC4058D6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
