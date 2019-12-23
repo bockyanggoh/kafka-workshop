@@ -9,6 +9,7 @@ using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
 using OrderMicroservice.ResponseModel;
 using OrderMicroservice.Services.Publisher;
+using OrderMicroservice.Services.Subscriber;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
 {
@@ -16,13 +17,15 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
     {
         private readonly IItemRepository _itemRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly SubscribeOrderService _subscribeOrderService;
         private readonly KafkaOrdersService _svc;
 
-        public CreateOrderCommandHandler(IItemRepository itemRepository, IOrderRepository orderRepository, KafkaOrdersService svc)
+        public CreateOrderCommandHandler(IItemRepository itemRepository, IOrderRepository orderRepository, KafkaOrdersService svc, SubscribeOrderService subscribeOrderService)
         {
             _itemRepository = itemRepository;
             _orderRepository = orderRepository;
             _svc = svc;
+            _subscribeOrderService = subscribeOrderService;
         }
 
         public async Task<ItemResponse<OrderDTO>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -66,17 +69,30 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         {
                             RequestStatus = CustomEnum.RequestStatus.Failed,
                             TransactionTs = DateTime.Now.ToString(),
-                            ErrorMessage = "Failed to send message to Payment Service. Your order is not processed."
+                            ErrorMessage = kafkaRes.ErrorInfo
+                        };
+                    }
+                    var res = await _subscribeOrderService.WaitForMessage(kafkaRes.CorrelationId);
+
+                    if (res.Success)
+                    {
+                        var itemData = new OrderDTO(order);
+                        itemData.PaymentInformation = res.Data.PaymentInformation;
+                        return new ItemResponse<OrderDTO>
+                        {
+                            RequestStatus = CustomEnum.RequestStatus.Success,
+                            TransactionTs = DateTime.Now.ToString(),
+                            ItemData = new OrderDTO(order),
                         };    
                     }
                     
+                    await _orderRepository.DeleteOrder(order);
                     return new ItemResponse<OrderDTO>
                     {
-                        RequestStatus = CustomEnum.RequestStatus.Success,
+                        RequestStatus = CustomEnum.RequestStatus.Failed,
                         TransactionTs = DateTime.Now.ToString(),
-                        ItemData = new OrderDTO(order)
+                        ErrorMessage = res.ErrorInfo
                     };
-                    
                 }
 
                 return new ItemResponse<OrderDTO>

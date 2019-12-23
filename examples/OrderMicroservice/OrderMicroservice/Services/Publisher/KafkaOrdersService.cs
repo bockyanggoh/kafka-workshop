@@ -40,6 +40,7 @@ namespace OrderMicroservice.Services.Publisher
 
             var msg = new CreatePaymentRequest
             {
+                CorrelationId = order.OrderId,
                 OrderId = order.OrderId,
                 PaymentStatus = order.PaymentStatus.GetDisplayName(),
                 RequestedTs = order.CreatedTs.ToString(DATETIME_FORMAT),
@@ -48,7 +49,7 @@ namespace OrderMicroservice.Services.Publisher
                 CostBreakdown = itemCosts
             };
 
-            var res = await SendMessage(msg, "test");
+            var res = await SendMessage(msg, msg.CorrelationId);
             Console.WriteLine($"Response from Kafka: {JsonConvert.SerializeObject(res)}");
             return res;
         }

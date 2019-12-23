@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kafka.Communication.Models;
 using Microsoft.OpenApi.Extensions;
 using OrderMicroservice.Domain.AggregateModel;
 
@@ -11,6 +12,7 @@ namespace OrderMicroservice.ResponseModel
         public string Username { get; set; }
         public DateTime CreatedTs { get; set; }
         public List<OrderItemDTO> OrderItems { get; set; }
+        public PaymentInformation PaymentInformation { get; set; }
         public string PaymentStatus { get; set; }
 
         public OrderDTO(OrderEntity orderEntity)

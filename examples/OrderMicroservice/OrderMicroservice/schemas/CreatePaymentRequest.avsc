@@ -9,6 +9,11 @@
         "type": "string"
     },
     {
+        "name": "CorrelationId",
+        "doc": "CorrelationId for this request",
+        "type": "string"
+    },
+    {
         "name": "OrderId",
         "doc": "Order Id for this order",
         "type": "string"

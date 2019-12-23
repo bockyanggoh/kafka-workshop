@@ -20,6 +20,7 @@ using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
 using OrderMicroservice.OptionModel;
 using OrderMicroservice.Services.Publisher;
+using OrderMicroservice.Services.Subscriber;
 
 namespace OrderMicroservice
 {
@@ -41,6 +42,7 @@ namespace OrderMicroservice
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Order APIs", Version = "v1"});
             });
             services.AddSingleton<KafkaOrdersService>();
+            services.AddSingleton<SubscribeOrderService>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddEntityFrameworkSqlServer()

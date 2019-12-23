@@ -1,0 +1,29 @@
+﻿{
+    "type": "record",
+    "namespace": "Kafka.Communication.Models",
+    "name": "CreatePaymentResponse",
+    "fields": [
+    {
+        "name": "CorrelationId",
+        "doc": "CorrelationId for this request",
+        "type": "string"
+    },
+    {
+        "name": "OrderId",
+        "doc": "Order Id for this order",
+        "type": "string"
+    },
+    {
+        "name": "PaymentInformation",
+        "doc": "Get Payment Information",
+        "type": {
+            "name": "PaymentInformation",
+            "type": "record",
+            "fields": [
+                {"name":"PaymentId", "type": "string"},
+                {"name":"PaymentStatus", "type": "string"},
+                {"name":"PaymentAmount", "type": "double"}
+            ]
+        }
+    }]
+}

@@ -15,11 +15,15 @@ namespace Kafka.Communication.Models
 	
 	public partial class CreatePaymentRequest : ISpecificRecord
 	{
-		public static Schema _SCHEMA = Schema.Parse(@"{""type"":""record"",""name"":""CreatePaymentRequest"",""namespace"":""Kafka.Communication.Models"",""fields"":[{""name"":""RequestType"",""doc"":""Type of Request"",""type"":""string""},{""name"":""OrderId"",""doc"":""Order Id for this order"",""type"":""string""},{""name"":""Username"",""doc"":""Username of requestor"",""type"":""string""},{""name"":""PaymentStatus"",""doc"":""Payment Status for Order"",""type"":""string""},{""name"":""RequestedTs"",""doc"":""Timestamp of Request"",""type"":""string""},{""name"":""CostBreakdown"",""doc"":""Cost Entries"",""type"":{""type"":""array"",""items"":{""type"":""record"",""name"":""ItemCost"",""namespace"":""Kafka.Communication.Models"",""fields"":[{""name"":""ItemId"",""type"":""string""},{""name"":""ItemName"",""type"":""string""},{""name"":""CostPrice"",""type"":""double""}]}}}]}");
+		public static Schema _SCHEMA = Schema.Parse(@"{""type"":""record"",""name"":""CreatePaymentRequest"",""namespace"":""Kafka.Communication.Models"",""fields"":[{""name"":""RequestType"",""doc"":""Type of Request"",""type"":""string""},{""name"":""CorrelationId"",""doc"":""CorrelationId for this request"",""type"":""string""},{""name"":""OrderId"",""doc"":""Order Id for this order"",""type"":""string""},{""name"":""Username"",""doc"":""Username of requestor"",""type"":""string""},{""name"":""PaymentStatus"",""doc"":""Payment Status for Order"",""type"":""string""},{""name"":""RequestedTs"",""doc"":""Timestamp of Request"",""type"":""string""},{""name"":""CostBreakdown"",""doc"":""Cost Entries"",""type"":{""type"":""array"",""items"":{""type"":""record"",""name"":""ItemCost"",""namespace"":""Kafka.Communication.Models"",""fields"":[{""name"":""ItemId"",""type"":""string""},{""name"":""ItemName"",""type"":""string""},{""name"":""CostPrice"",""type"":""double""}]}}}]}");
 		/// <summary>
 		/// Type of Request
 		/// </summary>
 		private string _RequestType;
+		/// <summary>
+		/// CorrelationId for this request
+		/// </summary>
+		private string _CorrelationId;
 		/// <summary>
 		/// Order Id for this order
 		/// </summary>
@@ -59,6 +63,20 @@ namespace Kafka.Communication.Models
 			set
 			{
 				this._RequestType = value;
+			}
+		}
+		/// <summary>
+		/// CorrelationId for this request
+		/// </summary>
+		public string CorrelationId
+		{
+			get
+			{
+				return this._CorrelationId;
+			}
+			set
+			{
+				this._CorrelationId = value;
 			}
 		}
 		/// <summary>
@@ -136,11 +154,12 @@ namespace Kafka.Communication.Models
 			switch (fieldPos)
 			{
 			case 0: return this.RequestType;
-			case 1: return this.OrderId;
-			case 2: return this.Username;
-			case 3: return this.PaymentStatus;
-			case 4: return this.RequestedTs;
-			case 5: return this.CostBreakdown;
+			case 1: return this.CorrelationId;
+			case 2: return this.OrderId;
+			case 3: return this.Username;
+			case 4: return this.PaymentStatus;
+			case 5: return this.RequestedTs;
+			case 6: return this.CostBreakdown;
 			default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Get()");
 			};
 		}
@@ -149,11 +168,12 @@ namespace Kafka.Communication.Models
 			switch (fieldPos)
 			{
 			case 0: this.RequestType = (System.String)fieldValue; break;
-			case 1: this.OrderId = (System.String)fieldValue; break;
-			case 2: this.Username = (System.String)fieldValue; break;
-			case 3: this.PaymentStatus = (System.String)fieldValue; break;
-			case 4: this.RequestedTs = (System.String)fieldValue; break;
-			case 5: this.CostBreakdown = (IList<Kafka.Communication.Models.ItemCost>)fieldValue; break;
+			case 1: this.CorrelationId = (System.String)fieldValue; break;
+			case 2: this.OrderId = (System.String)fieldValue; break;
+			case 3: this.Username = (System.String)fieldValue; break;
+			case 4: this.PaymentStatus = (System.String)fieldValue; break;
+			case 5: this.RequestedTs = (System.String)fieldValue; break;
+			case 6: this.CostBreakdown = (IList<Kafka.Communication.Models.ItemCost>)fieldValue; break;
 			default: throw new AvroRuntimeException("Bad index " + fieldPos + " in Put()");
 			};
 		}

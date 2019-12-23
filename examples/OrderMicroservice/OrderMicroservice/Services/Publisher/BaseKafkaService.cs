@@ -48,7 +48,6 @@ namespace OrderMicroservice.Services.Publisher
                         RequestTimeoutMs = 5000
                     };
                 }
-                
             }
             catch (Exception)
             {
