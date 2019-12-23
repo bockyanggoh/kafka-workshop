@@ -14,7 +14,9 @@ kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-status --zookeeper kafka1:22181
 
 kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic PaymentRequestAvro --zookeeper kafka1:22181
+kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic PaymentResponseAvro --zookeeper kafka1:22181
 kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic OrderInformationRequestAvro --zookeeper kafka1:22181
+kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic OrderInformationResponseAvro --zookeeper kafka1:22181
 
 
 kafka-topics.sh --describe --zookeeper kafka1:22181
