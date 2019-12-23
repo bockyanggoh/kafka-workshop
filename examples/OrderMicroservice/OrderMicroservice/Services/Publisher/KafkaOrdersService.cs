@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Kafka.Communication.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Extensions;
 using Newtonsoft.Json;
+using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Exceptions;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
@@ -21,17 +24,31 @@ namespace OrderMicroservice.Services.Publisher
         {
         }
 
-        public async Task<KafkaPublishStatus> CreatePaymentRequest(OrderUserRequest request)
+        public async Task<KafkaPublishStatus> CreatePaymentRequest(OrderEntity order, List<ItemEntity> items)
         {
-            var msg = new DeliveryMessage
+            var itemCosts = new List<ItemCost>();
+
+            foreach (var i in items)
             {
-                CorrelationId = Guid.NewGuid().ToString(),
-                OrderIds = request.OrderIds,
-                Username = request.Username,
-                RequestedTs = DateTime.Now.ToString(DATETIME_FORMAT)
+                itemCosts.Add(new ItemCost
+                {
+                    ItemName = i.ItemName,
+                    ItemId = i.ItemId,
+                    CostPrice = i.CostPrice
+                });
+            }
+
+            var msg = new CreatePaymentRequest
+            {
+                OrderId = order.OrderId,
+                PaymentStatus = order.PaymentStatus.GetDisplayName(),
+                RequestedTs = order.CreatedTs.ToString(DATETIME_FORMAT),
+                RequestType = "Create",
+                Username = order.Username,
+                CostBreakdown = itemCosts
             };
 
-            var res = await SendMessage(msg, msg.CorrelationId);
+            var res = await SendMessage(msg, "test");
             Console.WriteLine($"Response from Kafka: {JsonConvert.SerializeObject(res)}");
             return res;
         }

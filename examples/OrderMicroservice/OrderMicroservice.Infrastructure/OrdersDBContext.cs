@@ -6,7 +6,6 @@ namespace OrderMicroservice.Infrastructure
 {
     public class OrdersDBContext : DbContext
     {
-        private const string DB_SCHEMA = "order-schema";
         public DbSet<ItemEntity> Items { get; set; }
         public DbSet<OrderEntity> Orders { get; set; }
 

@@ -14,6 +14,8 @@ namespace OrderMicroservice.Infrastructure.EntityConfiguration
                 .IsUnique();
             builder.HasIndex(i => i.ItemId);
 
+            builder.Property(i => i.CostPrice)
+                .HasColumnName("cost_price");
             builder.Property(i => i.ItemId)
                 .HasColumnName("item_id")
                 .HasColumnType("varchar(64)");

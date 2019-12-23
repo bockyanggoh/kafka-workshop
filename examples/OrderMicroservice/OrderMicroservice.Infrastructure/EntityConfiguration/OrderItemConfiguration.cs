@@ -12,9 +12,6 @@ namespace OrderMicroservice.Infrastructure.EntityConfiguration
             builder.HasKey(i => i.OrderItemId);
             builder.HasIndex(i => i.OrderId);
             builder.HasIndex(i => i.ItemId);
-            builder.HasOne(i => i.ItemEntity)
-                .WithOne()
-                .HasForeignKey<OrderItemEntity>(i => i.ItemId);
 
             builder.HasOne(i => i.OrderEntity)
                 .WithMany(i => i.OrderItems)

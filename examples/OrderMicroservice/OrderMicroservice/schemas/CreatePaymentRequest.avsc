@@ -3,11 +3,6 @@
     "namespace": "Kafka.Communication.Models",
     "name": "CreatePaymentRequest",
     "fields": [
-    { 
-        "name": "CorrelationId",
-        "doc": "Correlation Request Id for this order",
-        "type": "string"
-    },
     {
         "name": "RequestType",
         "doc": "Type of Request",
@@ -18,7 +13,7 @@
         "doc": "Order Id for this order",
         "type": "string"
     },
-    { 
+    {
         "name": "Username",
         "doc": "Username of requestor",
         "type": "string"
@@ -32,6 +27,23 @@
         "name": "RequestedTs",
         "doc": "Timestamp of Request",
         "type": "string"
+    },
+    {
+        "name": "CostBreakdown",
+        "doc": "Cost Entries",
+        "type": {
+            "name": "CostBreakdown",
+            "type": "array",
+            "items": {
+                "name": "ItemCost",
+                "type": "record",
+                "fields": [
+                    {"name": "ItemId", "type": "string"},
+                    {"name": "ItemName", "type": "string"},
+                    {"name": "CostPrice", "type": "double"}
+                ]   
+            }
+        }
     }
     ]
 }

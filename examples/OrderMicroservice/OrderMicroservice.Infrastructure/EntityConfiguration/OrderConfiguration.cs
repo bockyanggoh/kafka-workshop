@@ -11,7 +11,7 @@ namespace OrderMicroservice.Infrastructure.EntityConfiguration
             builder.ToTable("tbl_orders");
             builder.HasKey(i => i.OrderId);
             builder.HasIndex(i => i.Username);
-
+            builder.Property(i => i.PaymentStatus).HasColumnName("payment_status").HasColumnType("varchar(20)");
             builder.Property(i => i.Username).HasColumnName("username").HasColumnType("varchar(64)");
             builder.Property(i => i.CreatedTs).HasColumnName("created_ts").HasDefaultValueSql("GetDate()");
             builder.Property(i => i.OrderId).HasColumnName("order_id").HasColumnType("varchar(64)");

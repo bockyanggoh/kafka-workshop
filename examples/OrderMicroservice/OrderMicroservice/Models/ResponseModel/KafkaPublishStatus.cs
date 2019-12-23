@@ -4,6 +4,7 @@ namespace OrderMicroservice.Models.ResponseModel
     {
         public string Status { get; set; }
         public bool Success { get; set; }
+        public string ErrorInfo { get; set; }
         public string CorrelationId { get; set; }
     }
 }

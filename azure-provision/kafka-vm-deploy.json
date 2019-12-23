@@ -345,12 +345,9 @@
                 "sourcePortRange": "*",
                 "sourceAddressPrefix": "*",
                 "destinationPortRanges": [
-                  "49093",
-                  "59093",
                   "8081",
                   "8082",
-                  "8083",
-                  "8084"
+                  "9000"
                   ],
                 "destinationAddressPrefix": "*",
                 "access": "Allow",

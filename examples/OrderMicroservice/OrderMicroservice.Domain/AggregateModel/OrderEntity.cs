@@ -9,6 +9,14 @@ namespace OrderMicroservice.Domain.AggregateModel
         public string Username { get; set; }
         public DateTime CreatedTs { get; set; }
         public List<OrderItemEntity> OrderItems { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
+    }
+
+    public enum PaymentStatus
+    {
+        Paid,
+        Pending,
+        Rejected
     }
 
     public class OrderItemEntity
@@ -17,6 +25,5 @@ namespace OrderMicroservice.Domain.AggregateModel
         public string OrderId { get; set; }
         public OrderEntity OrderEntity { get; set; }
         public string ItemId { get; set; }
-        public ItemEntity ItemEntity { get; set; }
     }
 }

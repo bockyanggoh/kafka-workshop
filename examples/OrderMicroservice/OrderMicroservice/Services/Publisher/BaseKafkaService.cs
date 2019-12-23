@@ -87,20 +87,32 @@ namespace OrderMicroservice.Services.Publisher
             using (var producer =
                 new ProducerBuilder<string, T>(_producerConfig)
                     .SetKeySerializer(new AvroSerializer<string>(schemaRegistry))
-                    .SetValueSerializer(new AvroSerializer<T>(schemaRegistry))
+                    .SetValueSerializer(new AvroSerializer<T>(schemaRegistry, _avroSerializerConfig))
                     .SetErrorHandler((_, e) => Console.WriteLine($"Error in Kafka: {e.Reason}"))
                     .Build())
             {
-                var res = await producer.ProduceAsync(_publisher.Topic, new Message<string, T>{Key = correlationId, Value = request})
-                    .ContinueWith(task => task.IsFaulted
-                        ? $"error producing message: {task.Exception.Message}"
-                        : $"produced to: {task.Result.TopicPartitionOffset} successfully.", cts);
-                return new KafkaPublishStatus
+                try
                 {
-                    Status = res,
-                    Success = res.Contains("successfully"),
-                    CorrelationId = correlationId
-                };
+                    var res = await producer.ProduceAsync(_publisher.Topic,
+                        new Message<string, T> {Key = correlationId, Value = request});
+                    
+                    return new KafkaPublishStatus
+                    {
+                        Status = "Successful",
+                        Success = true,
+                        CorrelationId = res.Key
+                    };    
+                }
+                catch (KafkaException e)
+                {
+                    return new KafkaPublishStatus
+                    {
+                        Status = "Failed",
+                        Success = false,
+                        ErrorInfo = $"{e.Error.Code}: {e.Error.Reason}",
+                        CorrelationId = correlationId
+                    };    
+                }
             }
         }
     }
