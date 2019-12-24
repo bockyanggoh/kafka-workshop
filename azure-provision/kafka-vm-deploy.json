@@ -23,6 +23,13 @@
             "description": "VM name"
         }
     },
+    "vm3Name": {
+      "type": "string",
+      "defaultValue": "database",
+      "metadata": {
+        "description": "VM name"
+      }
+    },
     "adminUsername": {
         "type": "string",
         "metadata": {
@@ -46,17 +53,23 @@
   "variables": {
     "vm1Name": "[parameters('vm1Name')]",
     "vm2Name": "[parameters('vm2Name')]",
+    "vm3Name": "[parameters('vm3Name)]",
     "nic1": "kafka1-nic1",
     "nic2": "kafka2-nic1",
+    "nic3": "database-nic1",
     "virtualNetworkName": "[parameters('virtualNetworkName')]",
     "subnet1Name": "kafka-1-subnet",
     "subnet2Name": "kafka-2-subnet",
+    "subnet3Name": "database-subnet",
     "publicIPAddress1Name": "kafka1-publicip",
     "publicIPAddress2Name": "kafka2-publicip",
+    "publicIPAddress3Name": "database-publicip",
     "subnet1Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet1Name'))]",
     "subnet2Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet2Name'))]",
+    "subnet3Ref": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnet3Name'))]",
     "networkSecurityGroup1Name": "kafka1-nsg",
     "networkSecurityGroup2Name": "kafka2-nsg",
+    "networkSecurityGroup3Name": "database-nsg",
     "imagePublisher": "OpenLogic",
     "imageOffer": "CentOS",
     "imageSku": "7.5"
@@ -159,18 +172,24 @@
               ]
           },
           "subnets": [
-              {
-                  "name": "[variables('subnet1Name')]",
-                  "properties": {
-                      "addressPrefix": "12.0.1.0/28"
-                  }
-              },
-              {
-                  "name": "[variables('subnet2Name')]",
-                  "properties": {
-                      "addressPrefix": "12.0.2.0/28"
-                  }
+            {
+                "name": "[variables('subnet1Name')]",
+                "properties": {
+                    "addressPrefix": "12.0.1.0/28"
+                }
+            },
+            {
+                "name": "[variables('subnet2Name')]",
+                "properties": {
+                    "addressPrefix": "12.0.2.0/28"
+                }
+            },
+            {
+              "name": "[variables('subnet3Name')]",
+              "properties": {
+                  "addressPrefix": "12.0.3.0/28"
               }
+            }
           ]
       }
   },
@@ -237,6 +256,35 @@
       }
     },
     {
+      "name": "[variables('nic3')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2018-08-01",
+      "location": "[resourceGroup().location]",
+      "comments": "NIC 3",
+      "dependsOn": [
+          "[variables('publicIPAddress2Name')]",
+          "[variables('networkSecurityGroup3Name')]",
+          "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddress3Name'))]",
+          "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+      ],
+      "properties": {
+          "ipConfigurations": [
+              {
+                  "name": "ipconfig1",
+                  "properties": {
+                      "subnet": {
+                          "id": "[variables('subnet3Ref')]"
+                      },
+                      "privateIPAllocationMethod": "Dynamic",
+                      "publicIpAddress": {
+                          "id": "[resourceId('Microsoft.Network/publicIpAddresses', variables('publicIPAddress3Name'))]"
+                      }
+                  }
+              }
+          ]
+      }
+    },
+    {
       "name": "[variables('publicIPAddress1Name')]",
       "type": "Microsoft.Network/publicIpAddresses",
       "apiVersion": "2018-11-01",
@@ -248,6 +296,16 @@
     },
     {
       "name": "[variables('publicIPAddress2Name')]",
+      "type": "Microsoft.Network/publicIpAddresses",
+      "apiVersion": "2018-11-01",
+      "location": "[resourceGroup().location]",
+      "comments": "Public IP for Primary NIC",
+      "properties": {
+          "publicIpAllocationMethod": "Dynamic"
+      }
+    },
+    {
+      "name": "[variables('publicIPAddress3Name')]",
       "type": "Microsoft.Network/publicIpAddresses",
       "apiVersion": "2018-11-01",
       "location": "[resourceGroup().location]",
@@ -382,6 +440,46 @@
                 "destinationPortRanges": [
                   "49093",
                   "59093"
+                  ],
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 1000,
+                "direction": "Inbound"
+              }
+            }
+        ]
+    }
+  },
+  {
+    "name": "[variables('networkSecurityGroup3Name')]",
+    "type": "Microsoft.Network/networkSecurityGroups",
+    "apiVersion": "2018-08-01",
+    "location": "[resourceGroup().location]",
+    "comments": "Network Security Group (NSG) for Primary NIC",
+    "properties": {
+        "securityRules": [
+            {
+                "name": "allow-ssh",
+                "properties": {
+                    "priority": 600,
+                    "sourceAddressPrefix": "*",
+                    "protocol": "Tcp",
+                    "destinationPortRange": "22",
+                    "access": "Allow",
+                    "direction": "Inbound",
+                    "sourcePortRange": "*",
+                    "destinationAddressPrefix": "*"
+                }
+            },
+            {
+              "name": "database-firewall",
+              "properties": {
+                "description": "Database Firewall Rules",
+                "protocol": "Tcp",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationPortRanges": [
+                  "1433"
                   ],
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
