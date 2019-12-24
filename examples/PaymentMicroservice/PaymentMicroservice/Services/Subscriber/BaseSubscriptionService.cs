@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Options;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
 
-namespace OrderMicroservice.Services.Subscriber
+namespace PaymentMicroservice.Services.Subscriber
 {
     public class BaseSubscriptionService
     {
@@ -31,6 +30,7 @@ namespace OrderMicroservice.Services.Subscriber
                 EnableAutoCommit = false,
                 AutoOffsetReset = AutoOffsetReset.Earliest,
                 SessionTimeoutMs = 5000,
+                SocketTimeoutMs = 5000
             };
 
             _schemaRegistryConfig = new SchemaRegistryConfig
@@ -41,9 +41,10 @@ namespace OrderMicroservice.Services.Subscriber
             };
         }
 
-        public async Task<KafkaMessageStatus<T>> WaitForResponse<T>(string correlationId, int timeout=20000) where T : class
+        public async Task<KafkaMessageStatus<T>> WaitForResponse<T>(string correlationId, int timeout=5000) where T : class
         {
             _consumerConfig.SessionTimeoutMs = timeout;
+            _consumerConfig.SocketTimeoutMs = timeout;
             using(var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
             using (var consumer = new ConsumerBuilder<string, T>(_consumerConfig)
                 .SetKeyDeserializer(new AvroDeserializer<string>(schemaRegistry).AsSyncOverAsync())

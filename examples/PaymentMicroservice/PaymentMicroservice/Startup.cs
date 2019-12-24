@@ -15,7 +15,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using OrderMicroservice.OptionModel;
+using PaymentMicroservice.Domain.AggregateModel;
 using PaymentMicroservice.Infrastructure;
+using PaymentMicroservice.Infrastructure.Repositories;
+using PaymentMicroservice.Services.Publisher;
+using PaymentMicroservice.Services.Subscriber;
 
 namespace PaymentMicroservice
 {
@@ -52,6 +56,9 @@ namespace PaymentMicroservice
             services.AddMvc()
                 .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
             services.AddControllers();
+            services.AddSingleton<PublishPaymentResponseService>();
+            services.AddScoped<IPaymentRepository, PaymentRepository>();
+            services.AddSingleton<IHostedService, SubscribePaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +81,8 @@ namespace PaymentMicroservice
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.ApplicationServices.GetService<SubscribePaymentService>();
         }
     }
 }

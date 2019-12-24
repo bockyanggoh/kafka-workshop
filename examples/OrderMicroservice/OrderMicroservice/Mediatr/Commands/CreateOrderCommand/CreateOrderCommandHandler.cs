@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Confluent.Kafka;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
+using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
 using OrderMicroservice.ResponseModel;
@@ -82,7 +83,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         {
                             RequestStatus = CustomEnum.RequestStatus.Success,
                             TransactionTs = DateTime.Now.ToString(),
-                            ItemData = new OrderDTO(order),
+                            ItemData = itemData
                         };    
                     }
                     

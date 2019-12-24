@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure.Repositories;
+using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Queries.GetItemsQuery

@@ -12,7 +12,7 @@ namespace OrderMicroservice.Services.Subscriber
         {
         }
 
-        public async Task<KafkaMessageStatus<CreatePaymentResponse>> WaitForMessage(string correlationId, int timeout=5000)
+        public async Task<KafkaMessageStatus<CreatePaymentResponse>> WaitForMessage(string correlationId, int timeout=20000)
         {
             var res = await WaitForResponse<CreatePaymentResponse>(correlationId, timeout);
             return res;

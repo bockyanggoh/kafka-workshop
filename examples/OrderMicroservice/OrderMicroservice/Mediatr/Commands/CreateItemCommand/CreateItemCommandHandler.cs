@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
+using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateItemCommand

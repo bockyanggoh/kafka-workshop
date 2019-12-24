@@ -1,4 +1,4 @@
-﻿namespace OrderMicroservice
+﻿namespace OrderMicroservice.Models.CustomEnum
 {
     public class CustomEnum
     {

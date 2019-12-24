@@ -26,9 +26,5 @@
       <ProjectReference Include="..\OrderMicroservice.Infrastructure\OrderMicroservice.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Models\CustomEnum" />
-    </ItemGroup>
-
 
 </Project>

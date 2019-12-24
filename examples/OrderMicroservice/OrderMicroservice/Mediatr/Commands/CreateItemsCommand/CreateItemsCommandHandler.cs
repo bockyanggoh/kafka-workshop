@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.OpenApi.Extensions;
 using OrderMicroservice.Domain.AggregateModel;
+using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateItemsCommand

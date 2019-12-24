@@ -13,7 +13,6 @@ namespace OrderMicroservice.ResponseModel
         public DateTime CreatedTs { get; set; }
         public List<OrderItemDTO> OrderItems { get; set; }
         public PaymentInformation PaymentInformation { get; set; }
-        public string PaymentStatus { get; set; }
 
         public OrderDTO(OrderEntity orderEntity)
         {
@@ -29,7 +28,6 @@ namespace OrderMicroservice.ResponseModel
                 });
             }
             OrderItems = items;
-            PaymentStatus = orderEntity.PaymentStatus.GetDisplayName();
         }
     }
 

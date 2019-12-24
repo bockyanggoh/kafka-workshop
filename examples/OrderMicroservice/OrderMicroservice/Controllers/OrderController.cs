@@ -3,6 +3,7 @@ using Kafka.Communication.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderMicroservice.Mediatr.Commands.CreateOrderCommand;
+using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.RequestModel;
 using OrderMicroservice.Services.Publisher;
 

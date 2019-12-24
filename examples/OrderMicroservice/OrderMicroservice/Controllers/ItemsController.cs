@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderMicroservice.Mediatr.Commands.CreateItemCommand;
 using OrderMicroservice.Mediatr.Commands.CreateItemsCommand;
+using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.RequestModel;
 
 namespace OrderMicroservice.Controllers
