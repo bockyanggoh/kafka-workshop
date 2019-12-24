@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
       "vmSize": {
-          "value": "Standard_B2MS"
+          "value": "Standard_B2ms"
       },
       "adminUsername": {
           "value": "kafka"
