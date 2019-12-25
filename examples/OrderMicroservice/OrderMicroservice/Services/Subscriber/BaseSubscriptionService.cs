@@ -55,14 +55,13 @@ namespace OrderMicroservice.Services.Subscriber
                 {
                     try
                     {
-                        var consumeResult = consumer.Consume(TimeSpan.FromMilliseconds(200));
+                        var consumeResult = consumer.Consume();
                         if (consumeResult != null)
                         {
-                            
                             Console.WriteLine($"Received at: {DateTime.Now}");
                             if (consumeResult.Key == correlationId)
                             {
-                                consumer.Commit(consumeResult);
+                                this.CommitAsync(consumer, consumeResult);
                                 consumer.Unsubscribe();
                                 Console.WriteLine($"Response from Payment: {consumeResult.Value}");
                                 return new KafkaMessageStatus<T>
@@ -88,6 +87,11 @@ namespace OrderMicroservice.Services.Subscriber
                     }
                 }
             }
+        }
+
+        private void CommitAsync<T>(IConsumer<string, T> consumer, ConsumeResult<string, T> consumeResult) where T : class
+        {
+            consumer.Commit(consumeResult);
         }
         
         protected string GenerateKafkaBrokerString(KafkaOption option)
