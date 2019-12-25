@@ -55,18 +55,25 @@ namespace OrderMicroservice.Services.Subscriber
                 {
                     try
                     {
-                        var consumeResult = consumer.Consume();
-                        if (consumeResult.Key == correlationId)
+                        var consumeResult = consumer.Consume(TimeSpan.FromMilliseconds(200));
+                        if (consumeResult != null)
                         {
-                            consumer.Commit(consumeResult);
-                            consumer.Unsubscribe();
-                            return new KafkaMessageStatus<T>
+                            
+                            Console.WriteLine($"Received at: {DateTime.Now}");
+                            if (consumeResult.Key == correlationId)
                             {
-                                CorrelationId = correlationId,
-                                Success = true,
-                                Data = consumeResult.Value
-                            };
+                                consumer.Commit(consumeResult);
+                                consumer.Unsubscribe();
+                                Console.WriteLine($"Response from Payment: {consumeResult.Value}");
+                                return new KafkaMessageStatus<T>
+                                {
+                                    CorrelationId = correlationId,
+                                    Success = true,
+                                    Data = consumeResult.Value
+                                };
+                            }    
                         }
+                        
                     }
                     catch (KafkaException e)
                     {

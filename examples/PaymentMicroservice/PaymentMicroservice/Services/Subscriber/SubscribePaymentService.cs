@@ -18,7 +18,7 @@ using PaymentMicroservice.Services.Publisher;
 
 namespace PaymentMicroservice.Services.Subscriber
 {
-    public class SubscribePaymentService: BackgroundService
+    public class SubscribePaymentService: IHostedService
     {
         private readonly ConsumerConfig _consumerConfig;
         private readonly KafkaSubscription _subscriptionInfo;
@@ -69,8 +69,14 @@ namespace PaymentMicroservice.Services.Subscriber
 
             return bootstrapServers;
         }
-        
-        protected override async  Task ExecuteAsync(CancellationToken stoppingToken)
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            ListenBackground(cancellationToken);
+            Console.WriteLine($"Kafka Background listener {this.GetType().Name} started.");
+        }
+
+        private async void ListenBackground(CancellationToken cancellationToken)
         {
             using(var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
             using (var consumer = new ConsumerBuilder<string, CreatePaymentRequest>(_consumerConfig)
@@ -79,23 +85,27 @@ namespace PaymentMicroservice.Services.Subscriber
                 .Build())
             {
                 consumer.Subscribe(_subscriptionInfo.Topic);
-                while (!stoppingToken.IsCancellationRequested)
+                while (!cancellationToken.IsCancellationRequested)
                 {
                     try
                     {
-                        var consumeResult = consumer.Consume();
-                        var res = await _mediator.Send(new CreatePaymentCommand
+                        var consumeResult = consumer.Consume(TimeSpan.FromSeconds(1));
+                        if (consumeResult != null)
                         {
-                            Request = consumeResult.Value
-                        });
-                        Console.WriteLine($"Created payment entry: {JsonConvert.SerializeObject(res)}");
-                        try
-                        {
-                            await _responseService.SendPaymentResponse(res, consumeResult.Key);
-                        }
-                        catch (KafkaException e)
-                        {
-                            //Error, TODO: Rollback payment if response sending fails.
+                            Console.WriteLine($"Received at: {DateTime.Now}");
+                            var res = await _mediator.Send(new CreatePaymentCommand
+                            {
+                                Request = consumeResult.Value
+                            });
+                            Console.WriteLine($"Created payment entry: {JsonConvert.SerializeObject(res)}");
+                            try
+                            {
+                                await _responseService.SendPaymentResponse(res, consumeResult.Key);
+                            }
+                            catch (KafkaException e)
+                            {
+                                //Error, TODO: Rollback payment if response sending fails.
+                            }
                         }
                     }
                     catch (KafkaException e)
@@ -107,5 +117,9 @@ namespace PaymentMicroservice.Services.Subscriber
             }
         }
 
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

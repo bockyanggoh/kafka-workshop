@@ -58,7 +58,7 @@ namespace PaymentMicroservice
             services.AddControllers();
             services.AddSingleton<PublishPaymentResponseService>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
-            services.AddSingleton<IHostedService, SubscribePaymentService>();
+            services.AddHostedService<SubscribePaymentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,7 +82,6 @@ namespace PaymentMicroservice
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            app.ApplicationServices.GetService<SubscribePaymentService>();
         }
     }
 }

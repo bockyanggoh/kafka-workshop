@@ -92,9 +92,11 @@ namespace OrderMicroservice.Services.Publisher
             {
                 try
                 {
+                    Console.WriteLine($"Sending now: {DateTime.Now}");
                     var res = await producer.ProduceAsync(_publisher.Topic,
                         new Message<string, T> {Key = correlationId, Value = request});
                     
+                    Console.WriteLine($"Sent at: {DateTime.Now}");
                     return new KafkaPublishStatus
                     {
                         Status = "Successful",

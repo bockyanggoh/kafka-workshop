@@ -88,9 +88,11 @@ namespace PaymentMicroservice.Services.Publisher
             {
                 try
                 {
+                    
+                    Console.WriteLine($"Sending : {DateTime.Now}");
                     var res = await producer.ProduceAsync(_publisher.Topic,
                         new Message<string, T> {Key = correlationId, Value = request});
-                    
+                    Console.WriteLine($"Sent at: {DateTime.Now}");
                     return new KafkaMessageStatus<T>()
                     {
                         Success = true,
