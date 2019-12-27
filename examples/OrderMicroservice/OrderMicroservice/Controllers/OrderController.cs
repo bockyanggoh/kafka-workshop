@@ -1,11 +1,9 @@
 using System.Threading.Tasks;
-using Kafka.Communication.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderMicroservice.Mediatr.Commands.CreateOrderCommand;
 using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.RequestModel;
-using OrderMicroservice.Services.Publisher;
 
 namespace OrderMicroservice.Controllers
 {
@@ -14,10 +12,8 @@ namespace OrderMicroservice.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IMediator _mediatr;
-        private readonly KafkaOrdersService _ordersService;
-        public OrderController(IMediator mediatr, KafkaOrdersService ordersService)
+        public OrderController(IMediator mediatr)
         {
-            _ordersService = ordersService;
             _mediatr = mediatr;
         }
 

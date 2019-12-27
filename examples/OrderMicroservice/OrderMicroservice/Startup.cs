@@ -1,26 +1,19 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using Confluent.Kafka;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
+using OrderMicroservice.Kafka.Services;
 using OrderMicroservice.OptionModel;
-using OrderMicroservice.Services.Publisher;
-using OrderMicroservice.Services.Subscriber;
 
 namespace OrderMicroservice
 {
@@ -41,8 +34,6 @@ namespace OrderMicroservice
             services.AddSwaggerGen(c =>{ 
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Order APIs", Version = "v1"});
             });
-            services.AddSingleton<KafkaOrdersService>();
-            services.AddSingleton<SubscribeOrderService>();
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddEntityFrameworkSqlServer()
@@ -59,6 +50,8 @@ namespace OrderMicroservice
             
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddSingleton(typeof(IKafkaProducer<>), typeof(KafkaProducer<>));
+            services.AddSingleton(typeof(IKafkaSubscriber<>), typeof(KafkaSubscriber<>));
             services.AddMvc()
                 .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
             services.AddControllers();

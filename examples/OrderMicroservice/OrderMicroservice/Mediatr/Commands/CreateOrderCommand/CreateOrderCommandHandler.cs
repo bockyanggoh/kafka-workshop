@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Confluent.Kafka;
+using Kafka.Communication.Models;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
+using OrderMicroservice.Mediatr.Commands.SendKafkaMessageCommand;
+using OrderMicroservice.Mediatr.Queries.ReceiveKafkaMessageQuery;
 using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
-using OrderMicroservice.OptionModel;
 using OrderMicroservice.ResponseModel;
-using OrderMicroservice.Services.Publisher;
-using OrderMicroservice.Services.Subscriber;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
 {
@@ -18,15 +17,16 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
     {
         private readonly IItemRepository _itemRepository;
         private readonly IOrderRepository _orderRepository;
-        private readonly SubscribeOrderService _subscribeOrderService;
-        private readonly KafkaOrdersService _svc;
+        private readonly IMediator _mediator;
 
-        public CreateOrderCommandHandler(IItemRepository itemRepository, IOrderRepository orderRepository, KafkaOrdersService svc, SubscribeOrderService subscribeOrderService)
+        public CreateOrderCommandHandler(
+            IItemRepository itemRepository, 
+            IOrderRepository orderRepository, 
+            IMediator mediator)
         {
+            _mediator = mediator;
             _itemRepository = itemRepository;
             _orderRepository = orderRepository;
-            _svc = svc;
-            _subscribeOrderService = subscribeOrderService;
         }
 
         public async Task<ItemResponse<OrderDTO>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -47,6 +47,8 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         PaymentStatus = PaymentStatus.Pending
                     };
                     var orderItems = new List<OrderItemEntity>();
+                    var costBreakdown = new List<ItemCost>();
+                    
                     foreach (var i in items)
                     {
                         orderItems.Add(new OrderItemEntity
@@ -56,13 +58,37 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                             OrderId = orderId,
                             OrderEntity = order
                         });
+                        costBreakdown.Add(new ItemCost
+                        {
+                            ItemId = i.ItemId,
+                            ItemName = i.ItemName,
+                            CostPrice = i.CostPrice
+                        });
                     }
 
                     order.OrderItems = orderItems;
 
                     await _orderRepository.SaveOrder(order);
+
+                    var paymentRequest = new CreatePaymentRequest
+                    {
+                        Username = order.Username,
+                        PaymentStatus = PaymentStatus.Pending.ToString(),
+                        OrderId = order.OrderId,
+                        RequestedTs = order.CreatedTs.ToString(),
+                        RequestType = "Create",
+                        CostBreakdown = costBreakdown
+                    };
+                    var kafkaRes = await _mediator.Send(new SendKafkaMessageCommand<CreatePaymentRequest>
+                    {
+                        CorrelationId = paymentRequest.CorrelationId,
+                        Message = paymentRequest,
+                        MessageType = MessageType.Avro,
+                        Partition = 0,
+                        Timeout = 8000,
+                        Topic = "CreatePaymentRequestAvro"
+                    });
                     
-                    var kafkaRes = await _svc.CreatePaymentRequest(order, items);
                     if (!kafkaRes.Success)
                     {
                         await _orderRepository.DeleteOrder(order);
@@ -73,7 +99,15 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                             ErrorMessage = kafkaRes.ErrorInfo
                         };
                     }
-                    var res = await _subscribeOrderService.WaitForMessage(kafkaRes.CorrelationId);
+
+                    var res = await _mediator.Send(new ReceiveKafkaMessageQuery<CreatePaymentResponse>
+                    {
+                        Topic = "CreatePaymentResponseAvro",
+                        CorrelationId = kafkaRes.CorrelationId,
+                        Timeout = 8000,
+                        MessageType = MessageType.Avro,
+                        Partition = 0
+                    });
 
                     if (res.Success)
                     {
