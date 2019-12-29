@@ -16,6 +16,7 @@ namespace OrderMicroservice.Kafka.Services.impl
         private readonly ConsumerConfig _consumerConfig;
         private readonly SchemaRegistryConfig _schemaRegistryConfig;
         private readonly KafkaOption _option;
+        private readonly IConsumer<string, T> _avroConsumer;
 
         public KafkaSubscriber(IOptions<KafkaOption> options)
         {
@@ -41,15 +42,17 @@ namespace OrderMicroservice.Kafka.Services.impl
         {
             var consumeResult = Task.Run(() =>
             {
+                Console.WriteLine($"Starting to consume Json messages from {topic} with CorrId {corrId}");
                 using (var consumer = new ConsumerBuilder<string, string>(_consumerConfig)
                     .Build())
                 {
                     consumer.Subscribe(topic);
                     try
                     {
-                        while (true)
+                        var splitDelay = timeout / 100;
+                        for (int i = 0; i < 100; i++)
                         {
-                            var res = consumer.Consume();
+                            var res = consumer.Consume(TimeSpan.FromMilliseconds(splitDelay));
                             if (res != null)
                             {
                                 Console.WriteLine($"Received at: {DateTime.Now}");
@@ -69,6 +72,12 @@ namespace OrderMicroservice.Kafka.Services.impl
                                 }
                             }
                         }
+                        return new KafkaMessageStatus<T>
+                        {
+                            CorrelationId = corrId,
+                            Success = false,
+                            ErrorInfo = $"Payment failed to respond to CorrelationId {corrId}. Request is nulled."
+                        };
                     }
                     catch (KafkaException e)
                     {
@@ -89,20 +98,27 @@ namespace OrderMicroservice.Kafka.Services.impl
 
         public Task<KafkaMessageStatus<T>> ReadAvroMessage(string corrId, string topic, int timeout = 5000)
         {
+            
             var consumeResult = Task.Run(() =>
             {
+                Console.WriteLine($"Starting to consume Avro messages from {topic} with CorrId {corrId}");
+
                 using (var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
                 using (var consumer = new ConsumerBuilder<string, T>(_consumerConfig)
                     .SetKeyDeserializer(new AvroDeserializer<string>(schemaRegistry).AsSyncOverAsync())
                     .SetValueDeserializer(new AvroDeserializer<T>(schemaRegistry).AsSyncOverAsync())
                     .Build())
                 {
+                    Console.WriteLine($"Logged at: {DateTime.Now}");
                     consumer.Subscribe(topic);
+                    
+                    Console.WriteLine($"Logged at: {DateTime.Now}");
                     try
                     {
-                        while (true)
+                        var shouldIquit = false;
+                        while (!shouldIquit)
                         {
-                            var res = consumer.Consume(TimeSpan.FromMilliseconds(timeout));
+                            var res = consumer.Consume(TimeSpan.FromMilliseconds(100));
                             if (res != null)
                             {
                                 Console.WriteLine($"Received at: {DateTime.Now}");
@@ -121,14 +137,13 @@ namespace OrderMicroservice.Kafka.Services.impl
                                     };
                                 }
                             }
-                            
-                            return new KafkaMessageStatus<T>
-                            {
-                                CorrelationId = corrId,
-                                Success = false,
-                                ErrorInfo = "No response from Payment Microservice."
-                            };
                         }
+                        return new KafkaMessageStatus<T>
+                        {
+                            CorrelationId = corrId,
+                            Success = false,
+                            ErrorInfo = "No response from Payment Microservice."
+                        };
                     }
                     catch (KafkaException e)
                     {

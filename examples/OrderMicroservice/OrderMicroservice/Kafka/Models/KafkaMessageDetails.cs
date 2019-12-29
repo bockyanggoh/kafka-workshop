@@ -5,6 +5,7 @@ namespace OrderMicroservice.Kafka.Models
         public string CorrelationId { get; set; }
         public T Message { get; set; }
         public string Topic { get; set; }
+        public string ResponseTopic { get; set; }
         public MessageType MessageType { get; set; }
         public int Partition { get; set; }
         public int Timeout { get; set; }

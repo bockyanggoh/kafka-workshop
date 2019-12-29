@@ -78,6 +78,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                     {
                         Username = order.Username,
                         PaymentStatus = PaymentStatus.Pending.ToString(),
+                        CorrelationId = order.OrderId,
                         OrderId = order.OrderId,
                         RequestedTs = order.CreatedTs.ToString(),
                         RequestType = "Create",
@@ -91,7 +92,8 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         MessageType = MessageType.Avro,
                         Partition = 0,
                         Timeout = 8000,
-                        Topic = "CreatePaymentRequestAvro"
+                        Topic = "PaymentRequestAvro",
+                        ResponseTopic = "PaymentResponseAvro"
                     });
                     
                     if (!kafkaRes.Success)

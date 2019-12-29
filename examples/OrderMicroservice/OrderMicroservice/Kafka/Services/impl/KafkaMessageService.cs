@@ -19,11 +19,10 @@ namespace OrderMicroservice.Kafka.Services.impl
         public async Task<KafkaMessageStatus<TResponse>> SendAndReceiveMessage(KafkaMessageDetails<TRequest> details)
         {
             await SendMessage(details);
-            var messageRes = await ReceiveMessage(
-                details.Topic,
+            return await ReceiveMessage(
+                details.ResponseTopic,
                 details.MessageType,
                 string.IsNullOrEmpty(details.CorrelationId) ? "default" : details.CorrelationId);
-            return messageRes;
         }
 
         public async Task SendMessage(KafkaMessageDetails<TRequest> details)
@@ -36,12 +35,14 @@ namespace OrderMicroservice.Kafka.Services.impl
                     details.Topic
                 );
             }
-            
-            await _producer.SendJsonMessage(
-                details.CorrelationId,
-                details.Message,
-                details.Topic
-            );
+            else
+            {
+                await _producer.SendJsonMessage(
+                    details.CorrelationId,
+                    details.Message,
+                    details.Topic
+                );
+            }
         }
 
         public async Task<KafkaMessageStatus<TResponse>> ReceiveMessage(string topic, MessageType messageType, string keyOfNotice = "default")
@@ -51,7 +52,7 @@ namespace OrderMicroservice.Kafka.Services.impl
                 var resAvro = await _subscriber.ReadAvroMessage(
                     keyOfNotice, 
                     topic,
-                    5000);
+                    10000);
                 return resAvro;
             }
 

@@ -18,6 +18,7 @@ using Microsoft.Win32;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
+using OrderMicroservice.Kafka.BackgroundService;
 using OrderMicroservice.Kafka.Services;
 using OrderMicroservice.Kafka.Services.impl;
 using OrderMicroservice.Mediatr.Commands.CreateItemCommand;
@@ -89,6 +90,7 @@ namespace OrderMicroservice
             services.For(typeof(IKafkaProducer<>)).Add(typeof(KafkaProducer<>)).Singleton();
             services.For(typeof(IKafkaSubscriber<>)).Add(typeof(KafkaSubscriber<>)).Singleton();
             services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
+            // services.AddHostedService<PaymentBackgroundService>();
             // Also exposes Lamar specific registrations
             // and functionality
         }
