@@ -26,7 +26,6 @@ namespace OrderMicroservice.Kafka.Services
                 GroupId = "OrderMS",
                 EnableAutoCommit = false,
                 AutoOffsetReset = AutoOffsetReset.Earliest,
-                SessionTimeoutMs = 5000,
             };
             _schemaRegistryConfig = new SchemaRegistryConfig
             {
@@ -40,7 +39,6 @@ namespace OrderMicroservice.Kafka.Services
 
         public Task<KafkaMessageStatus<T>> ReadJsonMessage(string corrId, string topic, int timeout = 5000)
         {
-            _consumerConfig.SessionTimeoutMs = timeout;
             var consumeResult = Task.Run(() =>
             {
                 using (var consumer = new ConsumerBuilder<string, string>(_consumerConfig)
@@ -91,7 +89,6 @@ namespace OrderMicroservice.Kafka.Services
 
         public Task<KafkaMessageStatus<T>> ReadAvroMessage(string corrId, string topic, int timeout = 5000)
         {
-            _consumerConfig.SessionTimeoutMs = timeout;
             var consumeResult = Task.Run(() =>
             {
                 using (var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
@@ -105,7 +102,7 @@ namespace OrderMicroservice.Kafka.Services
                     {
                         while (true)
                         {
-                            var res = consumer.Consume();
+                            var res = consumer.Consume(TimeSpan.FromMilliseconds(timeout));
                             if (res != null)
                             {
                                 Console.WriteLine($"Received at: {DateTime.Now}");
@@ -124,6 +121,13 @@ namespace OrderMicroservice.Kafka.Services
                                     };
                                 }
                             }
+                            
+                            return new KafkaMessageStatus<T>
+                            {
+                                CorrelationId = corrId,
+                                Success = false,
+                                ErrorInfo = "No response from Payment Microservice."
+                            };
                         }
                     }
                     catch (KafkaException e)

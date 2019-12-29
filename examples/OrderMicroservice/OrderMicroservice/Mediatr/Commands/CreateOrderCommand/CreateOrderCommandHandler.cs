@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using Kafka.Communication.Models;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
-using OrderMicroservice.Mediatr.Commands.SendKafkaMessageCommand;
-using OrderMicroservice.Mediatr.Queries.ReceiveKafkaMessageQuery;
 using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.ResponseModel;
+using OrderMicroservice.Services;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
 {
@@ -17,14 +16,17 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
     {
         private readonly IItemRepository _itemRepository;
         private readonly IOrderRepository _orderRepository;
+        private readonly IKafkaMessageService<CreatePaymentRequest, CreatePaymentResponse> _kafkaMessageService;
         private readonly IMediator _mediator;
 
         public CreateOrderCommandHandler(
             IItemRepository itemRepository, 
-            IOrderRepository orderRepository, 
+            IOrderRepository orderRepository,
+            IKafkaMessageService<CreatePaymentRequest, CreatePaymentResponse> kafkaMessageService,
             IMediator mediator)
-        {
+        {   
             _mediator = mediator;
+            _kafkaMessageService = kafkaMessageService;
             _itemRepository = itemRepository;
             _orderRepository = orderRepository;
         }
@@ -35,6 +37,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
             var orderId = Guid.NewGuid().ToString();
             try
             {
+                
                 var items = await _itemRepository.FindItemsByIds(request.OrderItemIds);
 
                 if (items.Count == request.OrderItemIds.Count)
@@ -69,7 +72,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                     order.OrderItems = orderItems;
 
                     await _orderRepository.SaveOrder(order);
-
+                    
                     var paymentRequest = new CreatePaymentRequest
                     {
                         Username = order.Username,
@@ -79,7 +82,8 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         RequestType = "Create",
                         CostBreakdown = costBreakdown
                     };
-                    var kafkaRes = await _mediator.Send(new SendKafkaMessageCommand<CreatePaymentRequest>
+                    var kafkaRes = await _kafkaMessageService.SendAndReceiveMessage(
+                        new KafkaMessageDetails<CreatePaymentRequest>
                     {
                         CorrelationId = paymentRequest.CorrelationId,
                         Message = paymentRequest,
@@ -100,42 +104,17 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         };
                     }
 
-                    var res = await _mediator.Send(new ReceiveKafkaMessageQuery<CreatePaymentResponse>
-                    {
-                        Topic = "CreatePaymentResponseAvro",
-                        CorrelationId = kafkaRes.CorrelationId,
-                        Timeout = 8000,
-                        MessageType = MessageType.Avro,
-                        Partition = 0
-                    });
-
-                    if (res.Success)
-                    {
-                        var itemData = new OrderDTO(order);
-                        itemData.PaymentInformation = res.Data.PaymentInformation;
-                        return new ItemResponse<OrderDTO>
-                        {
-                            RequestStatus = CustomEnum.RequestStatus.Success,
-                            TransactionTs = DateTime.Now.ToString(),
-                            ItemData = itemData
-                        };    
-                    }
                     
-                    await _orderRepository.DeleteOrder(order);
+
+                    var itemData = new OrderDTO(order);
+                    itemData.PaymentInformation = kafkaRes.Data.PaymentInformation;
                     return new ItemResponse<OrderDTO>
                     {
-                        RequestStatus = CustomEnum.RequestStatus.Failed,
+                        RequestStatus = CustomEnum.RequestStatus.Success,
                         TransactionTs = DateTime.Now.ToString(),
-                        ErrorMessage = res.ErrorInfo
-                    };
+                        ItemData = itemData
+                    };    
                 }
-
-                return new ItemResponse<OrderDTO>
-                {
-                    RequestStatus = CustomEnum.RequestStatus.Failed,
-                    TransactionTs = DateTime.Now.ToString(),
-                    ErrorMessage = "Some ItemIds are invalid. Please ensure requested items exist."
-                };
             }
             catch (Exception e)
             {
@@ -146,6 +125,13 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                     ErrorMessage = e.Message
                 };
             }
+            
+            return new ItemResponse<OrderDTO>
+            {
+                RequestStatus = CustomEnum.RequestStatus.Failed,
+                TransactionTs = DateTime.Now.ToString(),
+                ErrorMessage = "Unhandled error"
+            };
         }
     }
 }

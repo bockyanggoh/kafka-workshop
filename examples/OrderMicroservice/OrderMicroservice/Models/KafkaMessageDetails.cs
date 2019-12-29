@@ -1,9 +1,6 @@
-using MediatR;
-using OrderMicroservice.Models.ResponseModel;
-
-namespace OrderMicroservice.Mediatr.Commands.SendKafkaMessageCommand
+namespace OrderMicroservice.Services
 {
-    public class SendKafkaMessageCommand<T> : IRequest<KafkaMessageStatus<T>> where T : class
+    public class KafkaMessageDetails<T> where T : class
     {
         public string CorrelationId { get; set; }
         public T Message { get; set; }
