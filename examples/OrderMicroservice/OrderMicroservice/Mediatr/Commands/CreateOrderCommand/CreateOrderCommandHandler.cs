@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Kafka.Communication.Models;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
+using OrderMicroservice.Kafka.Models;
+using OrderMicroservice.Kafka.Services;
 using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.ResponseModel;
-using OrderMicroservice.Services;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
 {

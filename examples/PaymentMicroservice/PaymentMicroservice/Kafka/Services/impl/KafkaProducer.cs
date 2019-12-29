@@ -3,12 +3,13 @@ using System.Threading.Tasks;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using OrderMicroservice.Kafka.Models;
+using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
 
-namespace OrderMicroservice.Kafka.Services.impl
+namespace OrderMicroservice.Kafka.Services
 {
     public class KafkaProducer<T> : IKafkaProducer<T> where T : class
     {

@@ -19,6 +19,7 @@ using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
 using OrderMicroservice.Kafka.Services;
+using OrderMicroservice.Kafka.Services.impl;
 using OrderMicroservice.Mediatr.Commands.CreateItemCommand;
 using OrderMicroservice.Mediatr.Commands.CreateItemsCommand;
 using OrderMicroservice.Mediatr.Commands.CreateOrderCommand;
@@ -26,7 +27,6 @@ using OrderMicroservice.Mediatr.Commands.RollbackOrderCommand;
 using OrderMicroservice.Mediatr.Queries.GetItemQuery;
 using OrderMicroservice.Mediatr.Queries.GetItemsQuery;
 using OrderMicroservice.OptionModel;
-using OrderMicroservice.Services;
 using Container = Lamar.Container;
 
 namespace OrderMicroservice

@@ -6,10 +6,10 @@ using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using OrderMicroservice.Kafka.Models;
+using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
 
-namespace OrderMicroservice.Kafka.Services.impl
+namespace OrderMicroservice.Kafka.Services
 {
     public class KafkaSubscriber<T>: IKafkaSubscriber<T> where T : class
     {

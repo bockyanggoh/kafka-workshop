@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using OrderMicroservice.Kafka.Models;
 using OrderMicroservice.Models.ResponseModel;
 
 namespace OrderMicroservice.Kafka.Services

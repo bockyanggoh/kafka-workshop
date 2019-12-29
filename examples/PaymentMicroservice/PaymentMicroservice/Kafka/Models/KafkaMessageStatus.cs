@@ -1,4 +1,4 @@
-﻿﻿namespace OrderMicroservice.Models.ResponseModel
+﻿namespace PaymentMicroservice.Models.ResponseModel
 {
     public class KafkaMessageStatus<T> where T : class
     {
@@ -6,5 +6,7 @@
         public bool Success { get; set; }
         public string ErrorInfo { get; set; }
         public T Data { get; set; }
+        public int Partition { get; set; }
+        public int Offset { get; set; }
     }
 }

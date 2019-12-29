@@ -1,4 +1,4 @@
-﻿namespace OrderMicroservice.Models.ResponseModel
+﻿namespace OrderMicroservice.Kafka.Models
 {
     public class KafkaMessageStatus<T> where T : class
     {

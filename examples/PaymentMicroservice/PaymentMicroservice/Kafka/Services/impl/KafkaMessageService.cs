@@ -1,7 +1,8 @@
 using System.Threading.Tasks;
-using OrderMicroservice.Kafka.Models;
+using OrderMicroservice.Kafka.Services;
+using OrderMicroservice.Models.ResponseModel;
 
-namespace OrderMicroservice.Kafka.Services.impl
+namespace OrderMicroservice.Services
 {
     public class KafkaMessageService<TRequest, TResponse> : IKafkaMessageService<TRequest, TResponse>
         where TRequest : class
