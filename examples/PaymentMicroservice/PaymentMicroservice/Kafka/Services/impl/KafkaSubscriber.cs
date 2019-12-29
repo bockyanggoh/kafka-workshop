@@ -8,8 +8,9 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
+using PaymentMicroservice.Kafka.Models;
 
-namespace OrderMicroservice.Kafka.Services
+namespace PaymentMicroservice.Kafka.Services.impl
 {
     public class KafkaSubscriber<T>: IKafkaSubscriber<T> where T : class
     {

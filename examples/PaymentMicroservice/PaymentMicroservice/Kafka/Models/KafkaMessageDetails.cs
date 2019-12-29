@@ -1,4 +1,4 @@
-namespace OrderMicroservice.Services
+namespace PaymentMicroservice.Kafka.Models
 {
     public class KafkaMessageDetails<T> where T : class
     {

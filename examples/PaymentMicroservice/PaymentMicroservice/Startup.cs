@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Lamar;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,10 @@ using OrderMicroservice.OptionModel;
 using PaymentMicroservice.Domain.AggregateModel;
 using PaymentMicroservice.Infrastructure;
 using PaymentMicroservice.Infrastructure.Repositories;
+using PaymentMicroservice.Kafka.BackgroundServices;
+using PaymentMicroservice.Kafka.Services;
+using PaymentMicroservice.Kafka.Services.impl;
+using PaymentMicroservice.Mediatr.Commands.CreatePaymentCommand;
 using PaymentMicroservice.Services.Publisher;
 using PaymentMicroservice.Services.Subscriber;
 
@@ -32,15 +37,13 @@ namespace PaymentMicroservice
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public void ConfigureContainer(ServiceRegistry services)
         {
             services.AddOptions();
             services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
             services.AddSwaggerGen(c =>{ 
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Order APIs", Version = "v1"});
             });
-            services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddEntityFrameworkSqlServer()
                 .AddDbContext<PaymentDBContext>(options =>
                 {
@@ -53,12 +56,28 @@ namespace PaymentMicroservice
                         });
                 });
             
+            
+            services.For<IMediator>().Use<Mediator>().Transient();
+            services.For<ServiceFactory>().Use(ctx => ctx.GetInstance);
+            services.Scan(scanner =>
+            {
+                scanner.AssemblyContainingType<CreatePaymentCommand>();
+                scanner.ConnectImplementationsToTypesClosing(typeof(IRequestHandler<,>));
+            });
             services.AddMvc()
                 .AddJsonOptions(options => { options.JsonSerializerOptions.IgnoreNullValues = true; });
             services.AddControllers();
             services.AddSingleton<PublishPaymentResponseService>();
             services.AddScoped<IPaymentRepository, PaymentRepository>();
-            services.AddHostedService<SubscribePaymentService>();
+            services.For(typeof(IKafkaProducer<>)).Add(typeof(KafkaProducer<>)).Singleton();
+            services.For(typeof(IKafkaSubscriber<>)).Add(typeof(KafkaSubscriber<>)).Singleton();
+            services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
+            services.AddHostedService<PaymentBackgroundService>();
+        }
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,13 +12,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OrderMicroservice.OptionModel;
-using PaymentMicroservice.Domain.AggregateModel;
 using PaymentMicroservice.Mediatr.Commands.CreatePaymentCommand;
 using PaymentMicroservice.Services.Publisher;
 
-namespace PaymentMicroservice.Services.Subscriber
+namespace PaymentMicroservice.Kafka.BackgroundServices
 {
-    public class SubscribePaymentService: IHostedService
+    public class PaymentBackgroundService : IHostedService
     {
         private readonly ConsumerConfig _consumerConfig;
         private readonly KafkaSubscription _subscriptionInfo;
@@ -26,7 +25,7 @@ namespace PaymentMicroservice.Services.Subscriber
         private readonly PublishPaymentResponseService _responseService;
         private readonly IMediator _mediator;
         
-        public SubscribePaymentService(IOptions<KafkaOption> options, IMediator mediator, PublishPaymentResponseService responseService)
+        public PaymentBackgroundService(IOptions<KafkaOption> options, IMediator mediator, PublishPaymentResponseService responseService)
         {
             _mediator = mediator;
             _responseService = responseService;
@@ -50,7 +49,6 @@ namespace PaymentMicroservice.Services.Subscriber
                 MaxCachedSchemas = 10
             };
         }
-
         protected string GenerateKafkaBrokerString(KafkaOption option)
         {
             var bootstrapServers = "";
@@ -69,13 +67,6 @@ namespace PaymentMicroservice.Services.Subscriber
 
             return bootstrapServers;
         }
-
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            ListenBackground(cancellationToken);
-            Console.WriteLine($"Kafka Background listener {this.GetType().Name} started.");
-        }
-
         private async void ListenBackground(CancellationToken cancellationToken)
         {
             using(var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
@@ -84,6 +75,7 @@ namespace PaymentMicroservice.Services.Subscriber
                 .SetValueDeserializer(new AvroDeserializer<CreatePaymentRequest>(schemaRegistry).AsSyncOverAsync())
                 .Build())
             {
+                Console.WriteLine($"Starting to consume messages from {_subscriptionInfo.Topic}");
                 consumer.Subscribe(_subscriptionInfo.Topic);
                 while (!cancellationToken.IsCancellationRequested)
                 {
@@ -116,10 +108,16 @@ namespace PaymentMicroservice.Services.Subscriber
                 }
             }
         }
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            ListenBackground(cancellationToken);
+            Console.WriteLine($"Kafka Background listener {this.GetType().Name} started.");
+            return Task.CompletedTask;
+        }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
     }
 }

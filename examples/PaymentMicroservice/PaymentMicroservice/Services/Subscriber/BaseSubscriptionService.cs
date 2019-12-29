@@ -7,6 +7,7 @@ using Confluent.SchemaRegistry.Serdes;
 using Microsoft.Extensions.Options;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
+using PaymentMicroservice.Kafka.Models;
 
 namespace PaymentMicroservice.Services.Subscriber
 {

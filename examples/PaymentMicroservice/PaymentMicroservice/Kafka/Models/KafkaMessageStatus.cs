@@ -1,4 +1,4 @@
-﻿namespace PaymentMicroservice.Models.ResponseModel
+﻿namespace PaymentMicroservice.Kafka.Models
 {
     public class KafkaMessageStatus<T> where T : class
     {

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.OptionModel;
+using PaymentMicroservice.Kafka.Models;
 
 namespace PaymentMicroservice.Services.Publisher
 {
