@@ -90,6 +90,8 @@ namespace OrderMicroservice
             services.For(typeof(IKafkaProducer<>)).Add(typeof(KafkaProducer<>)).Singleton();
             services.For(typeof(IKafkaSubscriber<>)).Add(typeof(KafkaSubscriber<>)).Singleton();
             services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
+
+            services.AddCors(options => { options.AddDefaultPolicy(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }); });
             // services.AddHostedService<PaymentBackgroundService>();
             // Also exposes Lamar specific registrations
             // and functionality
@@ -105,7 +107,7 @@ namespace OrderMicroservice
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors();
             app.UseRouting();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

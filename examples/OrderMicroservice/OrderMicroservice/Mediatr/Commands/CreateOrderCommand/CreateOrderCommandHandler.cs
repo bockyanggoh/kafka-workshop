@@ -84,7 +84,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         RequestType = "Create",
                         CostBreakdown = costBreakdown
                     };
-                    var kafkaRes = await _kafkaMessageService.SendAndReceiveMessage(
+                    await _kafkaMessageService.SendMessage(
                         new KafkaMessageDetails<CreatePaymentRequest>
                     {
                         CorrelationId = paymentRequest.CorrelationId,
@@ -95,22 +95,8 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                         Topic = "PaymentRequestAvro",
                         ResponseTopic = "PaymentResponseAvro"
                     });
-                    
-                    if (!kafkaRes.Success)
-                    {
-                        await _orderRepository.DeleteOrder(order);
-                        return new ItemResponse<OrderDTO>
-                        {
-                            RequestStatus = CustomEnum.RequestStatus.Failed,
-                            TransactionTs = DateTime.Now.ToString(),
-                            ErrorMessage = kafkaRes.ErrorInfo
-                        };
-                    }
-
-                    
 
                     var itemData = new OrderDTO(order);
-                    itemData.PaymentInformation = kafkaRes.Data.PaymentInformation;
                     return new ItemResponse<OrderDTO>
                     {
                         RequestStatus = CustomEnum.RequestStatus.Success,
