@@ -90,14 +90,6 @@ namespace PaymentMicroservice.Kafka.BackgroundServices
                                 Request = consumeResult.Value
                             });
                             Console.WriteLine($"Created payment entry: {JsonConvert.SerializeObject(res)}");
-                            try
-                            {
-                                await _responseService.SendPaymentResponse(res, consumeResult.Key);
-                            }
-                            catch (KafkaException e)
-                            {
-                                //Error, TODO: Rollback payment if response sending fails.
-                            }
                         }
                     }
                     catch (KafkaException e)

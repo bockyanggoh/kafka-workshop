@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using PaymentMicroservice.Domain.AggregateModel;
 
 namespace PaymentMicroservice.Infrastructure.Repositories
@@ -13,14 +15,22 @@ namespace PaymentMicroservice.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<PaymentEntity> FindPaymentByOrderId(string orderId)
+        public PaymentEntity FindPaymentByOrderId(string orderId)
         {
-            throw new NotImplementedException();
+            var query =  
+                from i in _context.Payments
+                where i.OrderId == orderId
+                select i;
+            return query.First();
         }
 
-        public Task<PaymentEntity> FindPaymentByPaymentId(string paymentId)
+        public PaymentEntity FindPaymentByPaymentId(string paymentId)
         {
-            throw new NotImplementedException();
+            var query =  
+                from i in _context.Payments
+                where i.PaymentId == paymentId
+                select i;
+            return query.First();
         }
 
         public Task SavePayment(PaymentEntity paymentEntity)

@@ -73,6 +73,8 @@ namespace PaymentMicroservice
             services.For(typeof(IKafkaSubscriber<>)).Add(typeof(KafkaSubscriber<>)).Singleton();
             services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
             services.AddHostedService<PaymentBackgroundService>();
+            services.AddCors(options => { options.AddDefaultPolicy(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }); });
+
         }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -94,6 +96,7 @@ namespace PaymentMicroservice
                 c.RoutePrefix = string.Empty;
             });
             app.UseHttpsRedirection();
+            app.UseCors();
 
             app.UseRouting();
 
