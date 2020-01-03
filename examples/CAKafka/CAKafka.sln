@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAKafka.Library", "CAKafka.Library\CAKafka.Library.csproj", "{A8E2CBF8-E002-4891-B87E-6A91A96C705E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAKafka.Domain", "CAKafka.Domain\CAKafka.Domain.csproj", "{63AD47AE-843C-42FE-BDBE-7E63ED4E5D9B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8E2CBF8-E002-4891-B87E-6A91A96C705E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E2CBF8-E002-4891-B87E-6A91A96C705E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8E2CBF8-E002-4891-B87E-6A91A96C705E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8E2CBF8-E002-4891-B87E-6A91A96C705E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63AD47AE-843C-42FE-BDBE-7E63ED4E5D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63AD47AE-843C-42FE-BDBE-7E63ED4E5D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63AD47AE-843C-42FE-BDBE-7E63ED4E5D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63AD47AE-843C-42FE-BDBE-7E63ED4E5D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

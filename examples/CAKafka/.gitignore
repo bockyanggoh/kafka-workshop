@@ -1,0 +1,9 @@
+**/*.bin
+**/*.dll
+**/*.pdb
+**/*.deps.json
+**/out
+**/obj
+**/bin
+**/*.nupkg
+**/*.nuget.config
