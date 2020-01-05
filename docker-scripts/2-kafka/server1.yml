@@ -16,6 +16,7 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
       KAFKA_ERRORS_TOLERANCE: "all"
       KAFKA_ERRORS_DEADLETTERQUEUE_TOPIC_NAME: "dead"
+
   kafka-2:
     image: confluentinc/cp-kafka:latest
     network_mode: host
