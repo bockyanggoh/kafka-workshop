@@ -1,30 +1,23 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
+using CAKafka.Domain.Models;
+using CAKafka.Library;
+using CAKafka.Library.impl;
 using Lamar;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using OrderMicroservice.OptionModel;
 using PaymentMicroservice.Domain.AggregateModel;
 using PaymentMicroservice.Infrastructure;
 using PaymentMicroservice.Infrastructure.Repositories;
 using PaymentMicroservice.Kafka.BackgroundServices;
-using PaymentMicroservice.Kafka.Services;
-using PaymentMicroservice.Kafka.Services.impl;
 using PaymentMicroservice.Mediatr.Commands.CreatePaymentCommand;
 using PaymentMicroservice.Services.Publisher;
-using PaymentMicroservice.Services.Subscriber;
 
 namespace PaymentMicroservice
 {
@@ -40,7 +33,7 @@ namespace PaymentMicroservice
         public void ConfigureContainer(ServiceRegistry services)
         {
             services.AddOptions();
-            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.Configure<KafkaOptions>(Configuration.GetSection("Kafka"));
             services.AddSwaggerGen(c =>{ 
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Order APIs", Version = "v1"});
             });

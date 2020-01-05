@@ -1,16 +1,16 @@
 using System;
 using System.Threading.Tasks;
+using CAKafka.Domain.Models;
 using Kafka.Communication.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Extensions;
-using OrderMicroservice.OptionModel;
 using PaymentMicroservice.Domain.AggregateModel;
 
 namespace PaymentMicroservice.Services.Publisher
 {
     public class PublishPaymentResponseService: BaseKafkaService
     {
-        public PublishPaymentResponseService(IOptions<KafkaOption> option) : base(option)
+        public PublishPaymentResponseService(IOptions<KafkaOptions> option) : base(option)
         {
         }
 

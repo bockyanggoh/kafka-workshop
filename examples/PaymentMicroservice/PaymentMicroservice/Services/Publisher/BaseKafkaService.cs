@@ -2,14 +2,12 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CAKafka.Domain.Models;
 using Confluent.Kafka;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using OrderMicroservice.Models.ResponseModel;
-using OrderMicroservice.OptionModel;
-using PaymentMicroservice.Kafka.Models;
 
 namespace PaymentMicroservice.Services.Publisher
 {
@@ -20,7 +18,7 @@ namespace PaymentMicroservice.Services.Publisher
         private ProducerConfig _producerConfig;
         private readonly string _schemaRegistryUrl;
         private readonly AvroSerializerConfig _avroSerializerConfig;
-        protected BaseKafkaService(IOptions<KafkaOption> option)
+        protected BaseKafkaService(IOptions<KafkaOptions> option)
         {
             Console.WriteLine(JsonConvert.SerializeObject(option));
             
@@ -52,7 +50,7 @@ namespace PaymentMicroservice.Services.Publisher
             }
         }
         
-        protected string GenerateKafkaBrokerString(KafkaOption option)
+        protected string GenerateKafkaBrokerString(KafkaOptions option)
         {
             var bootstrapServers = "";
             foreach (KafkaBroker k in option.Servers.Brokers)
