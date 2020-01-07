@@ -354,7 +354,8 @@
                 "destinationPortRanges": [
                   "8081",
                   "8082",
-                  "9000"
+                  "9000",
+                  "1433"
                   ],
                 "destinationAddressPrefix": "*",
                 "access": "Allow",

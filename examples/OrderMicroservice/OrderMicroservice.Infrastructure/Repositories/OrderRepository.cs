@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -31,10 +32,7 @@ namespace OrderMicroservice.Infrastructure.Repositories
 
         public Task UpdateOrderPaymentStatus(string orderId, string paymentStatus)
         {
-            var query =
-                from o in _context.Orders
-                where o.OrderId == orderId
-                      select 
+            throw new NotImplementedException();
         }
 
         public Task SaveOrder(OrderEntity order)

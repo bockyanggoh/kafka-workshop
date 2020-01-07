@@ -65,7 +65,8 @@ namespace PaymentMicroservice
             services.For(typeof(IKafkaProducer<>)).Add(typeof(KafkaProducer<>)).Singleton();
             services.For(typeof(IKafkaSubscriber<>)).Add(typeof(KafkaSubscriber<>)).Singleton();
             services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
-            services.AddHostedService<PaymentBackgroundService>();
+            services.AddHostedService<PaymentBackgroundAvroService>();
+            services.AddHostedService<PaymentBackgroundJsonService>();
             services.AddCors(options => { options.AddDefaultPolicy(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }); });
 
         }
