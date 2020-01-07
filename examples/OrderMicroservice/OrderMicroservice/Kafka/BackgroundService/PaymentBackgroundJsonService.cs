@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using OrderMicroservice.Kafka.Communication.Models.Json;
 
 namespace OrderMicroservice.Kafka.BackgroundService
 {
@@ -27,11 +28,12 @@ namespace OrderMicroservice.Kafka.BackgroundService
             {
                 try
                 {
-                    // var mappedMessage = JsonConvert.DeserializeObject<PaymentRe>()
+                    var mappedMessage = JsonConvert.DeserializeObject<PaymentUpdateJson>(message.Value);
+                    
                 }
                 catch (JsonException e)
                 {
-
+                    
                 }
             });
         }

@@ -11,6 +11,7 @@ namespace OrderMicroservice.Domain.AggregateModel
 
         public Task<List<OrderEntity>> FindOrdersByUsername(string username);
 
+        public Task UpdateOrderPaymentStatus(string orderId, string paymentStatus);
         public Task SaveOrder(OrderEntity order);
         public Task SaveOrders(List<OrderEntity> orders);
         public Task DeleteOrder(OrderEntity orderEntity);

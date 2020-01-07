@@ -11,6 +11,7 @@ using OrderMicroservice.Kafka.Communication.Models.Json;
 using OrderMicroservice.Models.CustomEnum;
 using OrderMicroservice.Models.ResponseModel;
 using OrderMicroservice.ResponseModel;
+using PaymentStatus = OrderMicroservice.Domain.AggregateModel.PaymentStatus;
 
 namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
 {
