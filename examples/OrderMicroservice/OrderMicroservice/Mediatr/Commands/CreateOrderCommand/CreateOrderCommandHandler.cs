@@ -103,8 +103,7 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
                                 MessageType = MessageType.Avro,
                                 Partition = 0,
                                 Timeout = 8000,
-                                Topic = "PaymentRequestAvro",
-                                ResponseTopic = "PaymentResponseAvro"
+                                Topic = "PaymentRequestAvro"
                             });
                     }
                     else if (request.MessageType == KafkaMethods.MessageType.Json ||

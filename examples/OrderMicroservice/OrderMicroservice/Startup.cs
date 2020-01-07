@@ -85,8 +85,8 @@ namespace OrderMicroservice
             services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
 
             services.AddCors(options => { options.AddDefaultPolicy(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }); });
-            services.AddHostedService<PaymentBackgroundAvroService>();
-            services.AddHostedService<PaymentBackgroundJsonService>();
+            // services.AddHostedService<PaymentBackgroundAvroService>();
+            // services.AddHostedService<PaymentBackgroundJsonService>();
         }
 
 
