@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CAKafka.Library;
 using MediatR;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Models.ResponseModel;
@@ -10,5 +11,6 @@ namespace OrderMicroservice.Mediatr.Commands.CreateOrderCommand
     {
         public string Username { get; set; }
         public List<string> OrderItemIds { get; set; }
+        public KafkaMethods.MessageType MessageType { get; set; }
     }
 }

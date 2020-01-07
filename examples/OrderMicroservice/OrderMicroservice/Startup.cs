@@ -1,11 +1,9 @@
 using System;
-using System.Linq;
 using System.Reflection;
-using Avro.Specific;
-using BaselineTypeDiscovery;
-using Kafka.Communication.Models;
+using CAKafka.Domain.Models;
+using CAKafka.Library;
+using CAKafka.Library.impl;
 using Lamar;
-using Lamar.Scanning.Conventions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,21 +12,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Microsoft.Win32;
 using OrderMicroservice.Domain.AggregateModel;
 using OrderMicroservice.Infrastructure;
 using OrderMicroservice.Infrastructure.Repositories;
 using OrderMicroservice.Kafka.BackgroundService;
-using OrderMicroservice.Kafka.Services;
-using OrderMicroservice.Kafka.Services.impl;
 using OrderMicroservice.Mediatr.Commands.CreateItemCommand;
 using OrderMicroservice.Mediatr.Commands.CreateItemsCommand;
 using OrderMicroservice.Mediatr.Commands.CreateOrderCommand;
 using OrderMicroservice.Mediatr.Commands.RollbackOrderCommand;
 using OrderMicroservice.Mediatr.Queries.GetItemQuery;
 using OrderMicroservice.Mediatr.Queries.GetItemsQuery;
-using OrderMicroservice.OptionModel;
-using Container = Lamar.Container;
 
 namespace OrderMicroservice
 {
@@ -53,7 +46,7 @@ namespace OrderMicroservice
         {
             // Supports ASP.Net Core DI abstractions
             services.AddOptions();
-            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.Configure<KafkaOptions>(Configuration.GetSection("Kafka"));
             services.AddSwaggerGen(c =>{ 
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Order APIs", Version = "v1"});
             });
@@ -92,9 +85,8 @@ namespace OrderMicroservice
             services.For(typeof(IKafkaMessageService<,>)).Add(typeof(KafkaMessageService<,>)).Singleton();
 
             services.AddCors(options => { options.AddDefaultPolicy(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }); });
-            // services.AddHostedService<PaymentBackgroundService>();
-            // Also exposes Lamar specific registrations
-            // and functionality
+            services.AddHostedService<PaymentBackgroundAvroService>();
+            services.AddHostedService<PaymentBackgroundJsonService>();
         }
 
 

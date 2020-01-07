@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using CAKafka.Library;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OrderMicroservice.Mediatr.Commands.CreateOrderCommand;
@@ -17,13 +18,27 @@ namespace OrderMicroservice.Controllers
             _mediatr = mediatr;
         }
 
-        [HttpPut]
-        public async Task<IActionResult> CreateOrderApi([FromBody] OrderUserRequest request)
+        [HttpPut("json")]
+        public async Task<IActionResult> CreateOrderJsonApi([FromBody] OrderUserRequest request)
         {
             var res = await _mediatr.Send(new CreateOrderCommand
             {
                 Username = request.Username,
-                OrderItemIds = request.OrderIds
+                OrderItemIds = request.OrderIds,
+                MessageType = KafkaMethods.MessageType.Json
+            });
+            if (res.RequestStatus == CustomEnum.RequestStatus.Success)
+                return Ok(res);
+            return StatusCode(500, res);
+        }
+        [HttpPut("avro")]
+        public async Task<IActionResult> CreateOrderAvroApi([FromBody] OrderUserRequest request)
+        {
+            var res = await _mediatr.Send(new CreateOrderCommand
+            {
+                Username = request.Username,
+                OrderItemIds = request.OrderIds,
+                MessageType = KafkaMethods.MessageType.Avro
             });
             if (res.RequestStatus == CustomEnum.RequestStatus.Success)
                 return Ok(res);
