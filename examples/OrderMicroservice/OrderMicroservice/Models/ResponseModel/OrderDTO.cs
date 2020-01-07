@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Kafka.Communication.Models;
 using Microsoft.OpenApi.Extensions;
 using OrderMicroservice.Domain.AggregateModel;
+using OrderMicroservice.Kafka.Communication.Models.Json;
 
 namespace OrderMicroservice.ResponseModel
 {
@@ -29,6 +30,7 @@ namespace OrderMicroservice.ResponseModel
             }
             OrderItems = items;
         }
+        
     }
 
     public class OrderItemDTO

@@ -9,14 +9,9 @@ kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-sql-avro-config --zookeeper kafka1:22181
 kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-sql-avro-status --zookeeper kafka1:22181
 
-kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-avro-offsets --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-config --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 1 --partitions 1 --topic workshop-loki-status --zookeeper kafka1:22181
-
 kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic PaymentRequestAvro --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic PaymentResponseAvro --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic OrderInformationRequestAvro --zookeeper kafka1:22181
-kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic OrderInformationResponseAvro --zookeeper kafka1:22181
-
+kafka-topics.sh --create --replication-factor 4 --partitions 4 --topic PaymentRequestJson --zookeeper kafka1:22181
+kafka-topics.sh --zookeeper kafka1:22181 --alter --topic PaymentRequestAvro --config retention.ms=30000
+kafka-topics.sh --zookeeper kafka1:22181 --alter --topic PaymentRequestJson --config retention.ms=30000
 
 kafka-topics.sh --describe --zookeeper kafka1:22181

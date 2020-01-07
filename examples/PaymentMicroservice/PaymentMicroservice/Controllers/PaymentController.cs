@@ -19,7 +19,7 @@ namespace PaymentMicroservice.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<IActionResult> GetOrderPaymentInformation([FromQuery]string orderId="default", string paymentId="default")
         {
             if (orderId == "default" && paymentId == "default")
