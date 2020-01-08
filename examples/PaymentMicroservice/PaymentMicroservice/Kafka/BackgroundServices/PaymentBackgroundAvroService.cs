@@ -16,7 +16,7 @@ namespace PaymentMicroservice.Kafka.BackgroundServices
         private readonly IMediator _mediator;
         private readonly ILogger<PaymentBackgroundAvroService> _logger;
 
-        public async override Task ProcessingLogic(ConsumeResult<string, CreatePaymentRequest> message)
+        public override async Task ProcessingLogic(ConsumeResult<string, CreatePaymentRequest> message)
         {
             var items = new List<Items>();
             foreach (var i in message.Value.CostBreakdown)

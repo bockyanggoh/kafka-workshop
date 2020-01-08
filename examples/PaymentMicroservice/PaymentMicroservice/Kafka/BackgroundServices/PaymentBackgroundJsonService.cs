@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using CAKafka.Domain.Models;
 using CAKafka.Library.impl;
 using Confluent.Kafka;
-using Kafka.Communication.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
