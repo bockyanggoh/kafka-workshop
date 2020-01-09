@@ -6,7 +6,7 @@ using Confluent.Kafka;
 using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
-using KafkaPublisherAvro.OptionModel;
+using KafkaConsumerAvro.OptionModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -15,11 +15,11 @@ namespace KafkaConsumerAvro.Services.Subscriber
 {
     public class SubscribeAvroSpecific : BackgroundService
     {
-        private readonly KafkaOption _option;
+        private readonly KafkaOptions _option;
         private readonly ConsumerConfig _consumerConfig;
         private readonly SchemaRegistryConfig _schemaRegistryConfig;
 
-        public SubscribeAvroSpecific(IOptions<KafkaOption> options)
+        public SubscribeAvroSpecific(IOptions<KafkaOptions> options)
         {
             _option = options.Value;
             _consumerConfig = new ConsumerConfig
@@ -37,9 +37,9 @@ namespace KafkaConsumerAvro.Services.Subscriber
             };
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
+            await Task.Yield();
             using (var schemaRegistry = new CachedSchemaRegistryClient(_schemaRegistryConfig))
             using (var consumer =
                 new ConsumerBuilder<string, MessageModel>(_consumerConfig)
@@ -48,6 +48,7 @@ namespace KafkaConsumerAvro.Services.Subscriber
                     .SetErrorHandler((_, e) => Console.WriteLine($"Error: {e.Reason}"))
                     .Build())
             {
+                Console.WriteLine("Avro Specific Listener started.");
                 consumer.Subscribe("SuperAvroSpecific");
                 
                 try
@@ -77,11 +78,10 @@ namespace KafkaConsumerAvro.Services.Subscriber
                 }
             }
 
-            return null;
         }
 
 
-        public static string GenerateKafkaBrokerString(KafkaOption option)
+        public static string GenerateKafkaBrokerString(KafkaOptions option)
         {
             var bootstrapServers = "";
             foreach (KafkaBroker k in option.Servers.Brokers)

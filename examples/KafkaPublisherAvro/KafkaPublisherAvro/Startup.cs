@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KafkaPublisherAvro.OptionModel;
 using KafkaPublisherAvro.Services.Publisher;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace KafkaPublisherAvro
@@ -28,10 +21,10 @@ namespace KafkaPublisherAvro
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var kafkaOption = new KafkaOption();
+            var kafkaOption = new KafkaOptions();
             Configuration.GetSection("Kafka").Bind(kafkaOption);
             services.AddOptions();
-            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.Configure<KafkaOptions>(Configuration.GetSection("Kafka"));
             services.AddSingleton<BaseKafkaService>();
 
             services.AddSwaggerGen(c =>{ 

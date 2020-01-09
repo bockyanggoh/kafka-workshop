@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using KafkaConsumerAvro.OptionModel;
 using KafkaConsumerAvro.Services.Subscriber;
-using KafkaPublisherAvro.OptionModel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace KafkaConsumerAvro
 {
@@ -29,9 +22,8 @@ namespace KafkaConsumerAvro
         {
             
             services.AddOptions();
-            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.Configure<KafkaOptions>(Configuration.GetSection("Kafka"));
             services.AddSingleton<IHostedService, SubscribeAvroSpecific>();
-            services.AddSingleton<IHostedService, SubscribeAvroGeneric>();
             services.AddControllers();
         }
 
@@ -43,7 +35,6 @@ namespace KafkaConsumerAvro
                 app.UseDeveloperExceptionPage();
             }
 
-            app.ApplicationServices.GetService<SubscribeAvroGeneric>();
             app.ApplicationServices.GetService<SubscribeAvroSpecific>();
 
             app.UseHttpsRedirection();

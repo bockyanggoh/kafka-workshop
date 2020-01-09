@@ -5,7 +5,6 @@ using Avro;
 using Avro.Generic;
 using Codegen.Avro.Models;
 using Confluent.Kafka;
-using Confluent.Kafka.SyncOverAsync;
 using Confluent.SchemaRegistry;
 using Confluent.SchemaRegistry.Serdes;
 using KafkaPublisherAvro.OptionModel;
@@ -20,7 +19,7 @@ namespace KafkaPublisherAvro.Services.Publisher
         private readonly string _defaultBrokerString;
         private readonly string _schemaRegistryUrl;
         private readonly AvroSerializerConfig _avroSerializerConfig;
-        public BaseKafkaService(IOptions<KafkaOption> option)
+        public BaseKafkaService(IOptions<KafkaOptions> option)
         {
             Console.WriteLine(JsonConvert.SerializeObject(option));
             
@@ -41,7 +40,7 @@ namespace KafkaPublisherAvro.Services.Publisher
             }
         }
         
-        private string GenerateKafkaBrokerString(KafkaOption option)
+        private string GenerateKafkaBrokerString(KafkaOptions option)
         {
             var bootstrapServers = "";
             foreach (KafkaBroker k in option.Servers.Brokers)
