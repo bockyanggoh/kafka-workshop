@@ -8,12 +8,4 @@ services:
       - 'ACCEPT_EULA=Y'
       - 'SA_PASSWORD=P@ssw0rd12345'
     restart: "unless-stopped"
-  sql-payment:
-    image: mcr.microsoft.com/mssql/server:2017-latest
-    ports:
-      - "1434:1433"
-    environment:
-      - 'ACCEPT_EULA=Y'
-      - 'SA_PASSWORD=P@ssw0rd12345'
-    restart: "unless-stopped"
     

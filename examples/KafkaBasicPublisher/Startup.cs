@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using KafkaBasicPublisher.OptionModel;
 using KafkaBasicPublisher.Services.Publisher;
 using Microsoft.AspNetCore.Builder;
@@ -29,10 +25,10 @@ namespace KafkaBasicPublisher
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var kafkaOption = new KafkaOption();
+            var kafkaOption = new KafkaOptions();
             Configuration.GetSection("Kafka").Bind(kafkaOption);
             services.AddOptions();
-            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.Configure<KafkaOptions>(Configuration.GetSection("Kafka"));
             services.AddSingleton<SuperEasyPublisher>();
 
             services.AddSwaggerGen(c =>{ 

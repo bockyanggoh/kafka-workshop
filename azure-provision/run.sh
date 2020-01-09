@@ -13,8 +13,5 @@ echo "Kafka 1 Public IP: $kafka1"
 echo "Kafka 2 Public IP: $kafka2"
 echo "SQL Database Public IP: $kafka2, Access Port: 1433"
 
-export kafka1=$kafka1
-export kafka2=$kafka2
-
-echo "Connect to Kafka1 with this command: 'ssh kafka@\$kafka1'"
-echo "Connect to Kafka2 with this command: 'ssh kafka@\$kafka2'"
+echo "Connect to Kafka1 with this command: 'ssh kafka@$kafka1'"
+echo "Connect to Kafka2 with this command: 'ssh kafka@$kafka2'"

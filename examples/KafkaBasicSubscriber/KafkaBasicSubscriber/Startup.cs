@@ -1,4 +1,4 @@
-using KafkaBasicPublisher.OptionModel;
+using CAKafka.Domain.Models;
 using KafkaBasicSubscriber.Services.Subscriber;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -21,12 +21,12 @@ namespace KafkaBasicSubscriber
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var kafkaOption = new KafkaOption();
+            var kafkaOption = new KafkaOptions();
             Configuration.GetSection("Kafka").Bind(kafkaOption);
             services.AddOptions();
-            services.Configure<KafkaOption>(Configuration.GetSection("Kafka"));
+            services.Configure<KafkaOptions>(Configuration.GetSection("Kafka"));
             // services.AddSingleton<SuperEasySubscriber>();
-            services.AddSingleton<IHostedService, SuperEasySubscriber>();
+            services.AddSingleton<IHostedService, EasyBackgroundListener>();
             services.AddSwaggerGen(c =>{ 
                 c.SwaggerDoc("v1", new OpenApiInfo {Title = "Kafka API", Version = "v1"});
             });
@@ -49,7 +49,6 @@ namespace KafkaBasicSubscriber
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kafka API V1");
                 c.RoutePrefix = string.Empty;
             });
-            app.ApplicationServices.GetService<SuperEasySubscriber>();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

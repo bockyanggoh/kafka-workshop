@@ -9,7 +9,7 @@ namespace KafkaBasicPublisher.Services.Publisher
 {
     public class SuperEasyPublisher: BaseKafkaService
     {
-        public SuperEasyPublisher(IOptions<KafkaOption> options) : base(options.Value)
+        public SuperEasyPublisher(IOptions<KafkaOptions> options) : base(options.Value)
         {
         }
 

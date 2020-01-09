@@ -12,7 +12,7 @@ namespace KafkaBasicPublisher.Services.Publisher
     {
         private KafkaPublisher _publisher;
         private ProducerConfig _producerConfig;
-        public BaseKafkaService(KafkaOption option)
+        public BaseKafkaService(KafkaOptions option)
         {
             Console.WriteLine(JsonConvert.SerializeObject(option));
             try
@@ -32,17 +32,16 @@ namespace KafkaBasicPublisher.Services.Publisher
             }
         }
         
-        private string GenerateKafkaBrokerString(KafkaOption option)
+        protected internal static string GenerateKafkaBrokerString(KafkaOptions options)
         {
             var bootstrapServers = "";
-            foreach (KafkaServer k in option.Servers)
+            foreach (KafkaBroker k in options.Servers.Brokers)
             {
-                foreach (string port in k.Ports)
+                foreach (var port in k.Ports)
                 {
-                    bootstrapServers += string.Format("{0}:{1},", k.PublicIp, port);
+                    bootstrapServers += $"{k.PublicIp}:{port},";
                 }
             }
-
             if (bootstrapServers.EndsWith(","))
             {
                 bootstrapServers = bootstrapServers.Substring(0, bootstrapServers.Length - 1);

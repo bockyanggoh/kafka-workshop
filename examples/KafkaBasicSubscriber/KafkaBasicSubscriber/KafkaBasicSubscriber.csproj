@@ -2,14 +2,20 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CAKafka.Library" Version="1.0.13" />
       <PackageReference Include="Confluent.Kafka" Version="1.3.0" />
       <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0-rc4" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0-rc4" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0-rc4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="OptionModel" />
     </ItemGroup>
 
 
